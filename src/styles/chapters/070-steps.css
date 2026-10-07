@@ -1,0 +1,465 @@
+/* 070 · steps — "Every number traces back to a query you can read."
+   A run graph the dot travels node to node, leaving a lime thread; the SQL types beside it. */
+
+.steps-stage {
+  --steps-node-bg: linear-gradient(160deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.01) 60%), #0d0e0b;
+  --steps-edge: rgba(242, 244, 238, 0.16);
+  --steps-k: #a9c1ff;   /* keywords */
+  --steps-f: #c9b8ff;   /* functions, numbers */
+  --steps-s: #8fd8c4;   /* strings */
+}
+
+/* ------------------------------------------------------------ header */
+
+.steps-head { position: relative; z-index: 3; max-width: 1200px; }
+.steps-title { font-size: clamp(30px, 3.9vw, 62px); line-height: 1.02; }
+.steps-ln { display: block; overflow: hidden; padding-bottom: 0.2em; margin-bottom: -0.2em; }
+.steps-ln > span { display: block; will-change: transform; }
+.steps-em { font-style: normal; position: relative; white-space: nowrap; }
+.steps-em::after {
+  content: '';
+  position: absolute;
+  left: 0.02em;
+  right: 0.3em;
+  bottom: 0.1em;
+  height: 0.065em;
+  min-height: 2px;
+  border-radius: 2px;
+  background: var(--lime);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--steps-u, 0));
+  box-shadow: 0 0 18px rgba(201, 241, 68, 0.45);
+}
+.steps-lead { max-width: 25em; margin-top: 18px; font-size: clamp(15px, 1.2vw, 18px); }
+
+/* ------------------------------------------------------------- nodes */
+
+.steps-view { position: relative; margin: 40px 0; }
+.steps-world { display: flex; flex-wrap: wrap; gap: 14px; }
+.steps-edges, .steps-trails { display: none; }
+
+.steps-node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 220px;
+  min-height: 108px;
+  padding: 13px 14px 12px;
+  text-align: start;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--steps-node-bg);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 10px 24px -14px rgba(0, 0, 0, 0.9);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.35s, background-color 0.35s, box-shadow 0.35s;
+}
+.steps-node-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
+.steps-node-id { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.steps-av {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  font: 500 10px/1 var(--mono);
+  color: var(--mfg);
+  transition: color 0.35s, border-color 0.35s, background 0.35s;
+}
+.steps-av svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.steps-agent {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font: 500 11px/1.2 var(--ui);
+  color: var(--mfg);
+}
+/* a fixed width, so the label beside it never jumps when the state changes */
+.steps-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  flex: none;
+  min-width: 10ch;
+  font: 500 9.5px/1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.steps-node-review .steps-status { min-width: 11.2ch; }
+.steps-status i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.8; }
+.steps-status > span { display: none; }
+.steps-status .steps-st-d { display: inline; }
+.steps-node-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font: 700 17px/1.2 var(--sans);
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin-top: 2px;
+}
+.steps-node-title.mono { font: 500 15px/1.3 var(--mono); letter-spacing: 0; }
+.steps-node-sub {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font: 400 12.5px/1.4 var(--sans);
+  color: var(--mfg);
+}
+.steps-node-sub.mono { font: 400 11px/1.5 var(--mono); }
+.steps-run-b { display: none; }
+.steps-check { color: var(--lime); font-weight: 700; }
+.steps-num { color: var(--lime); font-size: 1.75em; letter-spacing: -0.03em; line-height: 1; }
+.steps-node-answer .steps-node-title { margin-top: 0; overflow: visible; }
+.steps-av-ok { color: var(--lime); border-color: rgba(201, 241, 68, 0.35); }
+
+/* hover detail */
+.steps-tip {
+  position: absolute;
+  left: -1px;
+  bottom: calc(100% + 10px);
+  width: max(100%, 240px);
+  padding: 11px 13px;
+  border-radius: 10px;
+  border: 1px solid var(--line-2);
+  background: rgba(14, 15, 12, 0.96);
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.9);
+  font: 400 12.5px/1.45 var(--sans);
+  color: var(--ink-2);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.22s, transform 0.3s cubic-bezier(0.2, 0.9, 0.2, 1);
+  pointer-events: none;
+  z-index: 5;
+}
+.steps-node:hover .steps-tip,
+.steps-node:focus-visible .steps-tip { opacity: 1; transform: none; }
+.steps-node:hover { border-color: rgba(201, 241, 68, 0.45); }
+.steps-node:hover, .steps-node:focus-visible { z-index: 4; }
+/* with JS the card's own tip only describes it (aria-describedby); a box over the canvas shows it */
+.js .steps-tip { display: none; }
+.steps-tipbox {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 6;
+  padding: 11px 13px;
+  border-radius: 10px;
+  border: 1px solid var(--line-2);
+  background: rgba(14, 15, 12, 0.96);
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.9);
+  font: 400 12.5px/1.45 var(--sans);
+  color: var(--ink-2);
+  opacity: 0;
+  transition: opacity 0.22s;
+  pointer-events: none;
+}
+.steps-tipbox.is-on { opacity: 1; }
+
+/* -------------------------------------------------------- SQL panel */
+
+.steps-sql {
+  position: relative;
+  margin: 0;
+  max-width: 600px;
+  overflow: hidden;
+  border-radius: 14px;
+}
+.steps-sql-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 14px 10px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.steps-sql-file { display: inline-flex; align-items: center; gap: 9px; font: 500 11px/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--mfg); }
+.steps-sql-file i { width: 14px; height: 10px; border: 1.5px solid currentColor; border-radius: 2px; opacity: 0.7; }
+.steps-sql-db { height: 24px; padding: 0 10px; font-size: 12px; }
+.steps-code {
+  margin: 0;
+  padding: 12px 18px 12px 0;
+  font: 400 14px/1.62 var(--mono);
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0, 'calt' 0;
+  color: var(--ink-2);
+  white-space: pre;
+  overflow: hidden;
+  tab-size: 2;
+}
+.steps-code code { font: inherit; display: block; padding-left: 18px; position: relative; }
+.steps-scan {
+  position: absolute;
+  left: 0;
+  right: -18px;
+  top: 0;
+  height: 1.62em;
+  border-left: 2px solid var(--lime);
+  background: linear-gradient(90deg, rgba(201, 241, 68, 0.16), rgba(201, 241, 68, 0.06) 45%, rgba(201, 241, 68, 0) 90%);
+  opacity: 0;
+  pointer-events: none;
+}
+.steps-code .steps-cl { display: block; position: relative; padding-left: 34px; height: 1.62em; }
+.steps-code .steps-cl-n {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  text-align: right;
+  color: var(--dim);
+  opacity: 0.55;
+  font-size: 0.85em;
+  line-height: 1.9;
+  user-select: none;
+}
+.steps-code .steps-cl-t { display: inline-block; vertical-align: top; overflow: hidden; white-space: pre; max-width: calc(var(--n, 999) * 1ch); }
+.steps-code .steps-cl.is-on .steps-cl-n { opacity: 1; color: var(--mfg); }
+.steps-caret {
+  position: absolute;
+  top: 0.22em;
+  left: calc(34px + var(--n, 0) * 1ch);
+  width: 2px;
+  height: 1.2em;
+  border-radius: 1px;
+  background: var(--lime);
+  box-shadow: 0 0 10px rgba(201, 241, 68, 0.6);
+  display: none;
+}
+.steps-code .steps-cl.is-cur .steps-caret { display: block; animation: steps-blink 1s steps(1) infinite; }
+@keyframes steps-blink { 50% { opacity: 0; } }
+.steps-code .steps-tk-k { color: var(--steps-k); }
+.steps-code .steps-tk-f { color: var(--steps-f); }
+.steps-code .steps-tk-n { color: var(--steps-f); }
+.steps-code .steps-tk-s { color: var(--steps-s); }
+.steps-code .steps-tk-o { color: var(--mfg); }
+.steps-code .steps-tk-a { color: var(--ink); font-weight: 500; }
+/* once the dot has read it, the query is the brightest thing in the panel */
+.steps-sql.is-read .steps-code { color: var(--ink); transition: color 0.4s; }
+.steps-sql.is-read .steps-cl-n { color: var(--ink-2); }
+
+.steps-sql-foot {
+  position: relative;
+  height: 38px;
+  border-top: 1px solid var(--line);
+  font: 500 11px/38px var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--mfg);
+}
+.steps-sql-foot .steps-sf {
+  position: absolute;
+  inset: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.3s, transform 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+.steps-sql-foot .steps-sf b { color: var(--ink); font-weight: 500; }
+.steps-sql-foot .steps-sf-4 { color: var(--ink-2); gap: 6px; }
+.steps-sql-foot .steps-sf-4 .steps-check { color: var(--lime); }
+.steps-sql[data-phase='0'] .steps-sf-0,
+.steps-sql[data-phase='1'] .steps-sf-1,
+.steps-sql[data-phase='2'] .steps-sf-2,
+.steps-sql[data-phase='3'] .steps-sf-3,
+.steps-sql[data-phase='4'] .steps-sf-4 { opacity: 1; transform: none; }
+html:not(.js) .steps-sql-foot .steps-sf-4 { opacity: 1; transform: none; }
+.steps-spin {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(242, 244, 238, 0.22);
+  border-top-color: var(--ink-2);
+  animation: steps-rot 0.9s linear infinite;
+}
+@keyframes steps-rot { to { transform: rotate(360deg); } }
+/* the thread, continued down the panel's edge to the line the dot is reading */
+.steps-spine { display: none; }
+
+/* -------------------------------------------------- the film (with JS) */
+
+.js .steps-head {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  top: clamp(92px, 12.5vh, 124px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 48px;
+  max-width: none;
+}
+.js .steps-lead { margin: 0 0 6px; flex: none; width: min(25em, 32vw); }
+.js .steps-lead, .js .steps-title { will-change: transform, opacity; }
+
+.js .steps-view {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  pointer-events: none;
+  /* a window onto the canvas: it fades out under the header, and fully clears the chapter rail on the right */
+  --steps-mask-y: linear-gradient(to bottom, transparent calc(var(--steps-mt, 220px) - 14px), #000 calc(var(--steps-mt, 220px) + 34px), #000 calc(var(--steps-mb, 100vh) - 26px), transparent calc(var(--steps-mb, 100vh) + 22px));
+  --steps-mask-x: linear-gradient(to right, transparent 16px, #000 96px, #000 calc(100% - 120px), transparent calc(100% - 64px));
+  -webkit-mask-image: var(--steps-mask-y), var(--steps-mask-x);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--steps-mask-y), var(--steps-mask-x);
+  mask-composite: intersect;
+}
+.js .steps-world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  display: block;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.js .steps-edges, .js .steps-trails {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  max-width: none;
+  overflow: visible;
+  pointer-events: none;
+}
+.js .steps-node {
+  position: absolute;
+  width: auto;
+  min-height: 0;
+  pointer-events: auto;
+}
+.steps-edges .steps-e { fill: none; stroke: var(--steps-edge); stroke-width: 1.4; }
+.steps-edges .steps-port { fill: #0d0e0b; stroke: rgba(242, 244, 238, 0.28); stroke-width: 1.3; }
+.steps-edges .steps-arrow { fill: rgba(242, 244, 238, 0.32); }
+.steps-trails path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.steps-trails .steps-t { stroke: var(--lime); stroke-width: 2; }
+.steps-trails .steps-tg { stroke: var(--lime); stroke-width: 7; opacity: 0.14; }
+/* the ride back: the retraced thread burns brighter, a comet runs just behind the dot */
+.steps-trails .steps-lit { stroke: #e6ff9c; stroke-width: 2.6; }
+.steps-trails .steps-drop { stroke: #e6ff9c; stroke-width: 2.6; }
+.steps-trails .steps-drop-g { stroke: var(--lime); stroke-width: 8; opacity: 0.2; }
+.steps-trails .steps-comet { stroke: #fff; stroke-width: 4; opacity: 0; }
+.steps-trails .steps-comet-g { stroke: var(--lime); stroke-width: 18; opacity: 0; }
+.js .steps-spine {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: #e6ff9c;
+  box-shadow: 0 0 10px rgba(201, 241, 68, 0.7);
+  transform-origin: 50% 0;
+  transform: scaleY(0);
+  pointer-events: none;
+}
+
+/* node states, set from p: q queued, r running, d done */
+.js .steps-node { opacity: 0; }
+.steps-node[data-s='q'] .steps-node-title,
+.steps-node[data-s='q'] .steps-node-sub { opacity: 0.55; }
+.steps-node[data-s='q'] .steps-st-d,
+.steps-node[data-s='r'] .steps-st-d { display: none; }
+.steps-node[data-s='q'] .steps-st-q { display: inline; }
+.steps-node[data-s='r'] .steps-st-r { display: inline; }
+.steps-node[data-s='r'] .steps-status { color: var(--ink-2); }
+.steps-node[data-s='r'] .steps-status i { animation: steps-pulse 1.1s ease-in-out infinite; }
+/* running: the app's own look, a 1px brand ring over a faint lime wash */
+.steps-node[data-s='r'] {
+  border-color: rgba(201, 241, 68, 0.5);
+  background: linear-gradient(160deg, rgba(201, 241, 68, 0.08), rgba(201, 241, 68, 0.012) 70%), #0d0e0b;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 0 0 1px rgba(201, 241, 68, 0.1), 0 0 0 1px rgba(201, 241, 68, 0.14);
+}
+.steps-node[data-s='r'] .steps-av { color: var(--ink); border-color: rgba(201, 241, 68, 0.45); }
+.steps-node[data-s='d'] .steps-status { color: var(--mfg); }
+.steps-node[data-s='d'] .steps-av { color: var(--ink-2); border-color: rgba(255, 255, 255, 0.2); }
+.steps-node[data-s='d'] .steps-run-a { display: none; }
+.steps-node[data-s='d'] .steps-run-b { display: inline; }
+.steps-node[data-node='review'] .steps-check { display: inline-block; transition: transform 0.4s cubic-bezier(0.3, 1.6, 0.4, 1), opacity 0.3s; }
+.steps-node[data-node='review']:not([data-s='d']) .steps-check { opacity: 0; transform: scale(0.4); }
+.steps-node[data-node='review'][data-s='d'] .steps-status { color: var(--lime); }
+.steps-node-answer[data-s='d'] {
+  border-color: rgba(201, 241, 68, 0.42);
+  background: linear-gradient(160deg, rgba(201, 241, 68, 0.09), rgba(201, 241, 68, 0.015) 70%), #0d0e0b;
+}
+.steps-node-answer[data-s='q'] .steps-num { color: var(--dim); font-weight: 500; }
+.steps-node-answer[data-s='d'] .steps-status { color: var(--lime); }
+@keyframes steps-pulse { 50% { opacity: 0.25; transform: scale(0.7); } }
+
+/* SQL panel as a world-anchored card (desktop) or a bottom sheet (phone) */
+.js .steps-sql {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  transform-origin: 0 0;
+  z-index: 2;
+  opacity: 0;
+  will-change: transform;
+}
+.js .steps-code .steps-cl-t { max-width: calc(var(--n, 0) * 1ch); }
+
+.js .steps-label { opacity: 0; }
+
+/* ------------------------------------------------------------- phone */
+
+@media (max-width: 759px) {
+  .steps-title { font-size: clamp(27px, 7.6vw, 34px); }
+  .js .steps-head { top: 84px; display: block; }
+  /* no rail on a phone: the canvas runs to the edges */
+  .js .steps-view { --steps-mask-x: linear-gradient(to right, transparent 0, #000 10px, #000 calc(100% - 10px), transparent 100%); }
+  /* the lead: one short line under the headline, until the query sheet rises */
+  .js .steps-lead {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    width: auto;
+    max-width: 27em;
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: 1.45;
+    opacity: 0;
+  }
+  .steps-node { gap: 4px; padding: 11px 12px 10px; }
+  .steps-node-title { font-size: 15.5px; }
+  .steps-node-title.mono { font-size: 13.5px; }
+  .steps-node-sub { font-size: 12px; -webkit-line-clamp: 1; }
+  .steps-node-sub.mono { font-size: 10.5px; line-height: 1.4; }
+  .steps-node[data-node='orders'] .steps-node-sub,
+  .steps-node[data-node='deliveries'] .steps-node-sub { -webkit-line-clamp: 2; }
+  .steps-tip, .steps-tipbox { display: none; }
+  .steps-code { font-size: 12px; padding: 12px 12px 12px 0; }
+  .steps-code code { padding-left: 10px; }
+  .steps-code .steps-cl { padding-left: 26px; }
+  .steps-code .steps-cl-n { width: 16px; }
+  .steps-caret { left: calc(26px + var(--n, 0) * 1ch); }
+  .steps-sql-head { padding: 9px 12px 8px 14px; }
+  .steps-sql-foot { height: 34px; line-height: 34px; }
+  .steps-sql-foot .steps-sf { inset: 0 14px; font-size: 10.5px; }
+  .js .steps-sql { transform-origin: 50% 100%; box-shadow: 0 -20px 60px -10px rgba(0, 0, 0, 0.95), 0 2px 0 rgba(255, 255, 255, 0.03) inset; }
+  /* the climax: the same query, compact, under the whole thread */
+  .js .steps-sql.is-compact .steps-sql-head { display: none; }
+  .js .steps-sql.is-compact .steps-code { font-size: 10.5px; line-height: 1.5; padding: 9px 12px 9px 0; }
+  .js .steps-sql.is-compact .steps-code .steps-cl { height: 1.5em; }
+  .js .steps-sql.is-compact .steps-scan { height: 1.5em; }
+  .js .steps-sql.is-compact .steps-cl-n { line-height: 1.75; }
+  .js .steps-sql.is-compact .steps-sql-foot { height: 30px; line-height: 30px; }
+}
+
+.reduced .steps-caret,
+.reduced .steps-spin,
+.reduced .steps-node[data-s='r'] .steps-status i { animation: none; }

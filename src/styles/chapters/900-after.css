@@ -1,0 +1,524 @@
+/* 900 after - the page after the story: ordinary flow, no stage. */
+
+.after-root {
+  padding: 0 var(--gutter);
+  color: var(--ink);
+}
+.after-root > * {
+  max-width: 1240px;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* keep the column clear of the corner companion (core parks it 46px from the edge) */
+@media (min-width: 761px) {
+  .after-root > * { max-width: min(1240px, calc(100vw - 160px)); }
+}
+
+/* scroll reveals (only when JS drives them) */
+.js .after-rise {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  filter: blur(6px);
+  transition: opacity 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.1s cubic-bezier(0.16, 1, 0.3, 1), filter 0.9s;
+  transition-delay: var(--d, 0ms);
+}
+.js .after-rise.is-in { opacity: 1; transform: none; filter: none; }
+
+/* ------------------------------------------------------- capabilities */
+
+.after-caps { padding: clamp(96px, 15vh, 160px) 0 clamp(80px, 12vh, 140px); }
+
+.after-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 24px 56px;
+  margin-bottom: clamp(40px, 7vh, 72px);
+}
+.after-eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 22px; }
+.after-eyedot { width: 6px; height: 6px; border-radius: 50%; background: var(--dim); transition: background 0.6s 0.3s, box-shadow 0.6s 0.3s; }
+.after-head.is-in .after-eyedot { background: var(--lime); box-shadow: 0 0 0 4px rgba(201, 241, 68, 0.12); }
+.after-h2 { max-width: 11em; }
+.after-lead { max-width: 30ch; padding-bottom: 0.4em; text-wrap: balance; }
+
+.after-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.after-card {
+  --lit: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 236px;
+  padding: 24px 24px 26px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0) 46%), var(--card);
+  box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+  transition: border-color 0.4s, transform 0.5s cubic-bezier(0.2, 0.9, 0.2, 1), background-color 0.4s;
+}
+/* the trace the marker leaves along the top edge when it lights (inside the
+   padding box: the card clips at its padding edge, so it cannot sit on the border) */
+.after-card::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  left: 28px;
+  right: 18px;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(201, 241, 68, 0.85), rgba(201, 241, 68, 0.18) 55%, transparent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--d, 0ms) + 380ms);
+}
+.after-card:hover { border-color: var(--line-2); transform: translateY(-3px); }
+
+.after-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: clamp(30px, 4.2vh, 44px);
+}
+.after-mark {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34362f;
+  flex: none;
+  transition: background 0.5s, box-shadow 0.5s, transform 0.6s cubic-bezier(0.34, 1.8, 0.5, 1);
+  transition-delay: calc(var(--d, 0ms) + 260ms);
+}
+.after-mark::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  border: 1px solid var(--lime);
+  opacity: 0;
+}
+/* a 22px line box = the icon's height, so headings line up across wide (no icon) and narrow cards */
+.after-num { font: 500 11px/22px var(--mono); letter-spacing: 0.14em; color: var(--dim); transition: color 0.5s; transition-delay: calc(var(--d, 0ms) + 260ms); }
+.after-ico {
+  width: 22px;
+  height: 22px;
+  margin-left: auto;
+  fill: none;
+  stroke: var(--mfg);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.4s;
+}
+.after-card:hover .after-ico { stroke: var(--ink); }
+.after-ct {
+  margin: 0 0 8px;
+  font: 700 clamp(19px, 1.45vw, 22px)/1.18 var(--sans);
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.after-cd {
+  margin: 0;
+  font: 400 15px/1.5 var(--sans);
+  color: var(--mfg);
+  text-wrap: pretty;
+}
+
+/* --- the bento: two wide cards carry a small product vignette beside their text */
+.after-card-wide { grid-column: span 2; flex-direction: row; align-items: stretch; gap: 26px; }
+.after-card-main { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
+.after-card-wide .after-ico { display: none; }
+.after-vig {
+  flex: 1.1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.008));
+}
+.js .after-vig > * {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--d, 0ms) + 440ms + var(--k, 0) * 90ms);
+}
+.js .after-card.is-lit .after-vig > * { opacity: 1; transform: none; }
+
+/* a vignette's caption: what it shows on the left, a count or tag on the right */
+.after-vk {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+  font: 500 10.5px/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mfg);
+}
+.after-vk b { color: var(--ink); font-weight: 500; }
+
+/* 01 - a point on a chart, opened into the rows behind it */
+.after-vig-rows { gap: 0; padding: 12px 16px; }
+.after-rrow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  padding: 7px 0;
+  border-top: 1px solid var(--line);
+  font: 400 12.5px/1.2 var(--mono);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.after-rrow > :first-child { color: var(--mfg); }
+.after-rrow > :nth-child(2) { overflow: hidden; text-overflow: ellipsis; }
+.after-rrow b { font-weight: 500; color: var(--ink); }
+
+/* 06 - the figure, and the caveat that comes with it */
+.after-vig-note { gap: 10px; }
+.after-vfig { font: 700 34px/1 var(--sans); letter-spacing: -0.02em; color: var(--ink); }
+.after-caveat {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line-2);
+  background: rgba(255, 255, 255, 0.03);
+  font: 400 13px/1.45 var(--sans);
+  color: var(--ink-2);
+}
+.after-caveat svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+/* lit */
+.after-card.is-lit::before { transform: scaleX(1); }
+.after-card.is-lit .after-mark { background: var(--lime); box-shadow: 0 0 0 4px rgba(201, 241, 68, 0.1); }
+.after-card.is-lit .after-num { color: var(--lime); }
+.after-card.is-lit .after-mark::after { animation: after-ping 1.1s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--d, 0ms) + 260ms); }
+@keyframes after-ping {
+  0% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 0; transform: scale(4.2); }
+}
+.js .after-card {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;
+  transition-delay: var(--d, 0ms), var(--d, 0ms), 0ms;
+}
+.js .after-card.is-in { opacity: 1; transform: none; }
+.js .after-card.is-in:hover { transform: translateY(-3px); transition-delay: 0ms; }
+
+/* ---------------------------------------------------------------- faq */
+
+.after-faq {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr);
+  align-items: start;
+  gap: 28px 56px;
+  padding-bottom: clamp(24px, 4vh, 48px);
+}
+.after-faq-head.is-in .after-eyedot { background: var(--lime); box-shadow: 0 0 0 4px rgba(201, 241, 68, 0.12); }
+.after-faq-list { border-bottom: 1px solid var(--line); }
+/* native details: the answer opens by height where the browser can animate it, instantly elsewhere */
+.after-qa { border-top: 1px solid var(--line); interpolate-size: allow-keywords; }
+.after-qa::details-content {
+  height: 0;
+  overflow: clip;
+  transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1), content-visibility 0.5s allow-discrete;
+}
+.after-qa[open]::details-content { height: auto; }
+.after-qa-s {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 0;
+  list-style: none;
+  cursor: pointer;
+}
+.after-qa-s::-webkit-details-marker { display: none; }
+.after-qa-q {
+  margin: 0;
+  font: 700 clamp(18px, 1.4vw, 21px)/1.3 var(--sans);
+  letter-spacing: -0.01em;
+  color: var(--ink-2);
+  transition: color 0.3s;
+}
+.after-qa-s:hover .after-qa-q, .after-qa[open] .after-qa-q { color: var(--ink); }
+/* a plus that folds into a minus, lit while its answer is open */
+.after-qa-ico {
+  position: relative;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  transition: border-color 0.3s, background 0.3s;
+}
+.after-qa-ico::before, .after-qa-ico::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 1.5px;
+  margin: -0.75px 0 0 -5px;
+  border-radius: 1px;
+  background: var(--ink-2);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
+}
+.after-qa-ico::after { transform: rotate(90deg); }
+.after-qa-s:hover .after-qa-ico { border-color: rgba(255, 255, 255, 0.24); }
+.after-qa[open] .after-qa-ico { border-color: rgba(201, 241, 68, 0.45); background: rgba(201, 241, 68, 0.07); }
+.after-qa[open] .after-qa-ico::before, .after-qa[open] .after-qa-ico::after { background: var(--lime); }
+.after-qa[open] .after-qa-ico::after { transform: rotate(0deg); }
+.after-qa-a {
+  max-width: 58ch;
+  margin: 0;
+  padding: 0 0 24px;
+  font: 400 16px/1.6 var(--sans);
+  color: var(--mfg);
+  text-wrap: pretty;
+}
+
+/* ---------------------------------------------- your first question */
+
+.after-ask {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: clamp(80px, 14vh, 150px) 0 clamp(110px, 18vh, 190px);
+}
+.after-ask::before {
+  /* a low pool of light under the pill */
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  width: min(900px, 100%);
+  height: 360px;
+  translate: -50% -50%;
+  background: radial-gradient(closest-side, rgba(201, 241, 68, 0.07), transparent);
+  pointer-events: none;
+  z-index: -1;
+}
+.after-ask-h {
+  margin: 0 0 clamp(30px, 5vh, 48px);
+  font: 700 clamp(40px, 6.4vw, 104px)/0.98 var(--sans);
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+/* the pill is one link: it looks like an input, and anywhere on it opens the
+   playground (nothing typed here is sent anywhere) */
+.after-pill {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: min(100%, 780px);
+  height: 74px;
+  padding: 0 9px 0 22px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)), var(--card);
+  box-shadow: 0 30px 80px -24px rgba(0, 0, 0, 0.85), 0 0 0 7px rgba(255, 255, 255, 0.018), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.3s, box-shadow 0.4s;
+  --d: 120ms;
+}
+.js .after-pill.after-rise {
+  transition: opacity 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.1s cubic-bezier(0.16, 1, 0.3, 1), filter 0.9s,
+    border-color 0.3s, box-shadow 0.4s;
+  transition-delay: var(--d), var(--d), var(--d), 0s, 0s;
+}
+.after-pill:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  box-shadow: 0 30px 80px -24px rgba(0, 0, 0, 0.85), 0 0 0 7px rgba(201, 241, 68, 0.035), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.after-pill:hover .after-try { background: #d6f86a; box-shadow: 0 10px 40px -8px rgba(201, 241, 68, 0.55); }
+.after-pill:hover .after-try .arrow { transform: translate(3px, -3px); }
+.after-pill:active .after-try { transform: scale(0.97); }
+.after-pill:focus-visible { border-radius: 999px; outline-offset: 5px; }
+.after-pill-ico {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+}
+.after-pill-ico svg { width: 17px; height: 17px; fill: none; stroke: var(--mfg); stroke-width: 1.6; stroke-linecap: round; }
+.after-pill-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  font: 400 clamp(16px, 1.35vw, 19px)/1.2 var(--sans);
+  color: var(--mfg);
+}
+.after-typed { overflow: hidden; text-overflow: ellipsis; }
+.after-pill.is-rtl .after-pill-text { direction: rtl; }
+.after-caret {
+  flex: none;
+  width: 2px;
+  height: 1.25em;
+  margin: 0 2px;
+  border-radius: 1px;
+  background: var(--ink-2);
+  animation: after-caret 1.05s steps(1) infinite;
+}
+.after-pill.is-typing .after-caret { animation: none; }
+@keyframes after-caret { 50% { opacity: 0; } }
+.after-try { flex: none; height: 56px; padding: 0 24px; }
+
+.after-note {
+  margin: 22px 0 0;
+  font: 400 14px/1.5 var(--sans);
+  color: var(--mfg);
+  --d: 220ms;
+}
+
+/* ------------------------------------------------------------- footer */
+
+.after-foot {
+  border-top: 1px solid var(--line);
+  padding: 40px 0 76px;
+  display: grid;
+  gap: 28px;
+}
+.after-foot-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 32px;
+  flex-wrap: wrap;
+}
+.after-foot-brand { display: block; text-decoration: none; }
+.after-foot-wm {
+  position: relative;
+  display: block;
+  width: 108px;
+  aspect-ratio: 898 / 251;
+  color: var(--ink);
+  background: var(--ink);
+  -webkit-mask: url(/assets/brand/prism-wordmark.png) center / contain no-repeat;
+  mask: url(/assets/brand/prism-wordmark.png) center / contain no-repeat;
+}
+/* with JS the footer wordmark is the vector one, its tittle a separate mark: the
+   dot's home at the end of the page (data-dot-home). When the companion settles
+   there (core adds .is-dot-home), the static tittle steps aside for the dot. */
+.after-foot-wm.is-vector { background: none; -webkit-mask: none; mask: none; }
+.after-foot-wm > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.after-foot-tittle { fill: currentColor; transition: opacity 0.35s; }
+.after-foot-wm.is-dot-home .after-foot-tittle { opacity: 0; }
+.after-foot-links { display: flex; flex-wrap: wrap; gap: 8px 30px; }
+.after-foot-links a {
+  font: 500 15px/1 var(--sans);
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.after-foot-links a:hover { color: var(--lime); }
+.after-foot-fine p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 400 13px/1.4 var(--sans);
+  color: var(--mfg);
+}
+.after-foot-by img { height: 11px; width: auto; display: inline-block; opacity: 0.85; }
+/* quieter, still above 4.5:1 on the ground */
+.after-foot-copy { font-family: var(--mono) !important; font-size: 12px !important; letter-spacing: 0.08em; padding-right: 56px; opacity: 0.85; }
+
+/* --------------------------------------------------------------- sizes */
+
+@media (max-width: 1100px) {
+  /* two columns: 01 and 06 take a whole row each, the four narrow cards pair up between them */
+  .after-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .after-faq { grid-template-columns: 1fr; gap: 20px; }
+}
+@media (max-width: 760px) {
+  .after-caps { padding: 112px 0 72px; }
+  .after-head { grid-template-columns: 1fr; gap: 16px; margin-bottom: 32px; }
+  .after-eyebrow { margin-bottom: 16px; }
+  .after-lead { font-size: 17px; }
+  .after-grid { grid-template-columns: 1fr; gap: 10px; }
+  /* the right padding keeps the text clear of the corner companion */
+  .after-card { min-height: 0; padding: 20px 34px 22px 20px; border-radius: 16px; }
+  .after-card-top { padding-bottom: 18px; }
+  .after-card-wide { grid-column: auto; flex-direction: column; gap: 0; }
+  .after-card-wide .after-vig { flex: none; margin-top: 16px; padding: 14px; }
+  /* the right padding keeps the question and its icon clear of the corner companion */
+  .after-qa-s { padding: 18px 34px 18px 0; gap: 16px; }
+  .after-qa-a { padding-right: 34px; font-size: 15px; }
+  .after-ask { padding: 64px 0 110px; }
+  .after-ask-h { font-size: clamp(38px, 11vw, 52px); }
+  .after-pill {
+    flex-wrap: wrap;
+    height: auto;
+    border-radius: 24px;
+    padding: 10px;
+    gap: 6px 10px;
+  }
+  .after-pill:focus-visible { border-radius: 24px; }
+  .after-pill-ico { width: 30px; height: 30px; margin-left: 6px; align-self: flex-start; margin-top: 7px; }
+  /* the questions wrap onto two lines here (the first one is the longest), and the
+     caret follows the last character; two lines are always reserved so nothing jumps */
+  .after-pill-text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+    height: auto;
+    min-height: calc(2 * 1.3em + 12px);
+    padding: 6px 0;
+    font-size: 16px;
+    line-height: 1.3;
+  }
+  .after-typed { display: inline; overflow: visible; text-overflow: clip; }
+  .after-caret { display: inline-block; height: 1.15em; vertical-align: -0.22em; }
+  .after-try { flex: 1 0 100%; height: 52px; }
+  .after-note { font-size: 13px; max-width: 30ch; }
+  .after-foot { padding: 32px 0 72px; gap: 22px; }
+  .after-foot-links { gap: 10px 22px; }
+  .after-foot-fine { flex-direction: column; align-items: flex-start; }
+  .after-foot-fine p { flex-wrap: wrap; }
+  .after-foot-copy { padding-right: 0; }
+}
+
+.reduced .after-rise, .reduced .after-card { transition: none !important; filter: none !important; transform: none !important; }
+.reduced .after-caret { animation: none; }
+.reduced .after-mark::after { animation: none !important; }
+.reduced .after-card::before, .reduced .after-mark, .reduced .after-num, .reduced .after-eyedot,
+.reduced .after-foot-tittle, .reduced .after-vig > *, .reduced .after-qa-ico, .reduced .after-qa-ico::before,
+.reduced .after-qa-ico::after, .reduced .after-qa::details-content { transition: none !important; }

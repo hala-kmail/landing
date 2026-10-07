@@ -1,0 +1,324 @@
+/* 090 hands - "Every number stays in the right hands."
+   A role switch whose knob is the dot; a customer table whose sensitive cells
+   are masked per role; an audit trail that records who asked what. */
+
+.hands-stage {
+  --k: 1; /* set from JS: the composition's scale for this viewport */
+  perspective: 1600px;
+}
+
+/* ------------------------------------------------------------------ grid */
+
+.hands-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.87fr) minmax(0, 1.13fr);
+  column-gap: calc(60px * var(--k));
+  align-items: center;
+}
+.js .hands-grid {
+  position: absolute;
+  inset: 0;
+  padding: calc(84px * var(--k)) calc(var(--gutter) + 56px) calc(92px * var(--k)) calc(var(--gutter) + 8px);
+}
+
+/* ------------------------------------------------------------------ copy */
+
+.hands-h2 { font-size: calc(62px * var(--k)); }
+.hands-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+.hands-ln { display: block; white-space: nowrap; }
+.hands-lead {
+  margin-top: calc(24px * var(--k));
+  max-width: 29ch;
+  font-size: calc(19px * var(--k));
+}
+
+/* --------------------------------------------------------------- switch */
+
+/* the switch sits right above the cells it unmasks, left-aligned with the Customer column */
+.hands-switch {
+  position: relative;
+  z-index: 3;
+  width: min(60%, calc(430px * var(--k)));
+  margin: 0 0 calc(18px * var(--k)) calc(22px * var(--k));
+}
+.hands-switch-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: calc(14px * var(--k));
+}
+.hands-count { color: var(--ink-2); letter-spacing: 0.12em; }
+.hands-count-txt { display: inline-block; }
+.hands-track {
+  position: relative;
+  height: calc(36px * var(--k));
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(255, 255, 255, 0.02)), rgba(255, 255, 255, 0.02);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.hands-fill {
+  position: absolute;
+  inset: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(201, 241, 68, 0.02), rgba(201, 241, 68, 0.2));
+  box-shadow: inset 0 0 0 1px rgba(201, 241, 68, 0.18);
+  clip-path: inset(0 100% 0 0 round 999px);
+}
+.hands-stop {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  background: var(--dim);
+}
+.hands-roles {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-top: calc(10px * var(--k));
+}
+.hands-role {
+  justify-self: center;
+  background: none;
+  border: 0;
+  padding: calc(8px * var(--k)) 2px;
+  font: 500 calc(15.5px * var(--k)) / 1.1 var(--sans);
+  color: var(--mfg);
+  cursor: pointer;
+  transition: color 0.3s;
+  white-space: nowrap;
+}
+.hands-role:first-child { justify-self: start; }
+.hands-role:last-child { justify-self: end; }
+.hands-role:hover { color: var(--ink-2); }
+.hands-role.is-on { color: var(--ink); }
+
+/* ----------------------------------------------------------------- table */
+
+.hands-cards { position: relative; transform-style: preserve-3d; }
+.hands-tilt { position: relative; transform-style: preserve-3d; }
+.hands-card { overflow: hidden; position: relative; z-index: 1; padding-bottom: calc(30px * var(--k)); }
+.hands-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: calc(14px * var(--k)) calc(22px * var(--k));
+  border-bottom: 1px solid var(--line);
+}
+.hands-src, .hands-policy {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(8px * var(--k));
+  font-size: calc(13px * var(--k));
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.hands-src .mono { font-size: calc(12.5px * var(--k)); }
+.hands-policy { color: var(--mfg); font-size: calc(12.5px * var(--k)); }
+.hands-policy b { color: var(--ink-2); font-weight: 500; }
+.hands-src svg, .hands-policy svg {
+  width: calc(16px * var(--k));
+  height: calc(16px * var(--k));
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: none;
+}
+
+.hands-row {
+  display: grid;
+  grid-template-columns: 1.42fr 1.6fr 1.3fr 0.72fr 0.88fr;
+  column-gap: calc(16px * var(--k));
+  align-items: center;
+  height: calc(47px * var(--k));
+  padding: 0 calc(22px * var(--k));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.hands-tr:last-child { border-bottom: 0; }
+.hands-thead {
+  height: calc(40px * var(--k));
+  background: rgba(255, 255, 255, 0.018);
+  font: 500 max(10px, calc(10.5px * var(--k))) / 1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mfg);
+}
+.hands-c {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: calc(14px * var(--k));
+  color: var(--ink);
+}
+.hands-thead .hands-c { font-size: inherit; color: inherit; display: flex; align-items: center; gap: 7px; }
+.hands-num { text-align: right; justify-content: flex-end; }
+.hands-tr .hands-num { color: var(--ink-2); }
+.hands-v {
+  display: inline-block;
+  max-width: calc(100% + 12px);
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  border-radius: 6px;
+  padding: 3px 6px;
+  margin: 0 -6px;
+  background: rgba(201, 241, 68, calc(var(--hl, 0) * 0.13));
+  box-shadow: inset 0 0 0 1px rgba(201, 241, 68, calc(var(--hl, 0) * 0.25));
+}
+.hands-v.is-masked {
+  font: 400 calc(12.5px * var(--k)) / 1.4 var(--mono);
+  color: var(--mfg);
+  letter-spacing: 0.02em;
+  /* a slow sheen passes over what you are not cleared to see */
+  background-image: linear-gradient(100deg, transparent 35%, rgba(242, 244, 238, 0.07) 50%, transparent 65%);
+  background-size: 300% 100%;
+  background-position: 120% 0;
+  animation: hands-sheen 4.2s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+@keyframes hands-sheen { 0% { background-position: 120% 0; } 60%, 100% { background-position: -20% 0; } }
+.hands-tr:nth-child(3) .hands-v.is-masked { animation-delay: 0.25s; }
+.hands-tr:nth-child(4) .hands-v.is-masked { animation-delay: 0.5s; }
+.hands-tr:nth-child(5) .hands-v.is-masked { animation-delay: 0.75s; }
+.hands-tr:nth-child(6) .hands-v.is-masked { animation-delay: 1s; }
+/* the sheen only runs while the chapter is on screen */
+.hands-stage:not(.is-live) .hands-v { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .hands-v.is-masked { animation: none; } }
+.hands-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: calc(18px * var(--k));
+  padding: 0 6px;
+  border-radius: 5px;
+  border: 1px solid var(--line-2);
+  font: 400 max(9px, calc(9.5px * var(--k))) / 1 var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-style: normal;
+  color: var(--mfg);
+  white-space: nowrap;
+}
+.hands-tag::before {
+  content: '';
+  width: 8px;
+  height: 9px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 9'><rect x='0.5' y='4' width='7' height='4.5' rx='1' fill='black'/><path d='M2 4V2.8a2 2 0 0 1 4 0V4' fill='none' stroke='black' stroke-width='1.1'/></svg>") center / contain no-repeat;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 9'><rect x='0.5' y='4' width='7' height='4.5' rx='1' fill='black'/><path d='M2 4V2.8a2 2 0 0 1 4 0V4' fill='none' stroke='black' stroke-width='1.1'/></svg>") center / contain no-repeat;
+}
+
+/* ----------------------------------------------------------------- audit */
+
+.hands-audit {
+  position: relative;
+  z-index: 2;
+  width: 84%;
+  margin: calc(-20px * var(--k)) calc(-28px * var(--k)) 0 auto;
+  padding: calc(14px * var(--k)) calc(20px * var(--k)) calc(8px * var(--k));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 50%), var(--card-2);
+}
+.hands-audit-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: calc(6px * var(--k)); }
+.hands-audit-head .label { font-size: calc(11px * var(--k)); }
+.hands-rec { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-2); }
+.hands-rec i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-2);
+  box-shadow: 0 0 0 3px rgba(242, 244, 238, 0.08);
+}
+.hands-logbox {
+  position: relative;
+  overflow: hidden;
+  height: calc(3 * var(--row));
+  --row: calc(31px * var(--k));
+  -webkit-mask: linear-gradient(180deg, #000 70%, transparent);
+  mask: linear-gradient(180deg, #000 70%, transparent);
+}
+.hands-log { list-style: none; margin: 0; padding: 0; will-change: transform; }
+.hands-entry {
+  display: grid;
+  grid-template-columns: auto calc(108px * var(--k)) minmax(0, 1fr) auto;
+  column-gap: calc(14px * var(--k));
+  align-items: center;
+  height: var(--row);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: calc(13.5px * var(--k));
+  color: var(--ink-2);
+  position: relative;
+}
+/* 8ch = a full timestamp, so the visitor's "now" row lines up with the others */
+.hands-entry time { min-width: 8ch; font-size: max(10px, calc(11.5px * var(--k))); color: var(--mfg); }
+.hands-entry b { font-weight: 500; color: var(--ink-2); white-space: nowrap; }
+.hands-q { color: var(--mfg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hands-entry em { font-style: normal; font-size: calc(11.5px * var(--k)); color: var(--mfg); white-space: nowrap; }
+.hands-entry { background: linear-gradient(90deg, rgba(242, 244, 238, calc(var(--now, 0) * 0.06)), transparent 80%); }
+.hands-old { opacity: 0.55; }
+.hands-entry.is-now b { color: var(--ink); }
+.hands-entry.is-now em { color: var(--ink-2); }
+/* the visitor's own question: pushed in at the top of the log when they pick a role */
+.js .hands-you { position: absolute; left: 0; right: 0; top: 0; opacity: 0; }
+.hands-you time { color: var(--ink); }
+html:not(.js) .hands-you { display: none; }
+
+/* ----------------------------------------------------------- the phone */
+
+@media (max-width: 759px) {
+  .hands-grid { grid-template-columns: minmax(0, 1fr); }
+  .js .hands-grid {
+    align-content: start;
+    row-gap: calc(18px * var(--k));
+    padding: calc(74px * var(--k)) 16px 0;
+  }
+  .hands-h2 { font-size: calc(36px * var(--k)); }
+  .hands-lead { font-size: calc(14.5px * var(--k)); line-height: 1.45; margin-top: calc(10px * var(--k)); max-width: 36ch; }
+  .hands-switch { margin: 0 0 calc(14px * var(--k)); width: 100%; }
+  .hands-switch-top { margin-bottom: calc(10px * var(--k)); }
+  .hands-track { height: calc(34px * var(--k)); }
+  .hands-role { font-size: calc(14.5px * var(--k)); }
+
+  .hands-card-head { padding: calc(11px * var(--k)) 14px; }
+  .hands-policy { display: none; }
+  .hands-thead { display: none; }
+  .hands-tr-5 { display: none; }
+  .hands-tr:nth-child(5) { border-bottom: 0; }
+  .hands-row {
+    height: auto;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: 'name rev' 'mail phone';
+    row-gap: calc(5px * var(--k));
+    column-gap: 12px;
+    padding: calc(8px * var(--k)) 14px;
+  }
+  .hands-tr > :nth-child(1) { grid-area: name; }
+  .hands-tr > :nth-child(2) { grid-area: mail; }
+  .hands-tr > :nth-child(3) { grid-area: phone; text-align: right; }
+  .hands-tr > :nth-child(4) { display: none; }
+  .hands-tr > :nth-child(5) { grid-area: rev; }
+  .hands-c { font-size: calc(14px * var(--k)); }
+  .hands-tr > :nth-child(2), .hands-tr > :nth-child(3) { font-size: calc(12.5px * var(--k)); color: var(--ink-2); }
+  .hands-v.is-masked { font-size: calc(11.5px * var(--k)); color: var(--mfg); }
+
+  .hands-audit { width: 100%; margin: calc(-12px * var(--k)) 0 0; padding: calc(11px * var(--k)) 14px calc(6px * var(--k)); }
+  .hands-entry { grid-template-columns: auto minmax(0, 1fr) auto; font-size: calc(12.5px * var(--k)); }
+  .hands-logbox { --row: calc(27px * var(--k)); height: calc(2 * var(--row)); }
+  .hands-card { padding-bottom: calc(14px * var(--k)); }
+  .hands-q { display: none; }
+  .hands-label { bottom: 18px; }
+}
+
+/* without JS the chapter is an ordinary block */
+html:not(.js) .hands-grid { gap: 48px; }
+@media (max-width: 759px) { html:not(.js) .hands-grid { gap: 32px; } }

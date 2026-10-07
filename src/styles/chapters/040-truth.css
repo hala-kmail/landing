@@ -1,0 +1,98 @@
+/* ==========================================================================
+   040 truth - 1,180 cracks, 4,630 stands, the year falls into the dark.  (owner B)
+   The stack (figure + tower) is the kit's, styled in 030-number.css.
+   ========================================================================== */
+
+.truth-stage { --F3: min(15vw, 25vh, 210px); }
+
+/* the duplicate stack is only for the film */
+html:not(.js) .truth-stack { display: none; }
+.truth-crack, .truth-shard { display: none; }
+
+.truth-h { margin: 0; font-weight: 700; }
+.truth-pre { display: block; }
+.truth-fig {
+  display: block;
+  overflow: hidden;
+  margin-top: 0.06em;
+  padding: 0.04em 0.4em 0.12em 0.02em;
+  margin-left: -0.02em;
+  font: 700 var(--F3)/1 var(--sans);
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.truth-figin { display: inline-block; }
+.truth-stop { display: inline-block; width: 0.328em; height: 0; }
+.truth-slot { margin-top: clamp(18px, 3.4vh, 34px); }
+.truth-slot > * { margin: 0 0 24px; }
+.js .truth-slot { display: grid; }
+.js .truth-slot > * { grid-area: 1 / 1; margin: 0; }
+.truth-lead { max-width: 30em; color: var(--ink-2); }
+.truth-lead span { display: inline; }
+.truth-q { font-style: normal; color: var(--mfg); }
+.truth-q-key {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: underline 1px;
+  text-decoration-color: rgba(242, 244, 238, 0.4);
+  text-underline-offset: 0.18em;
+}
+.truth-end {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  font: 700 var(--h3)/1.12 var(--sans);
+  letter-spacing: -0.02em;
+}
+.truth-e1 { color: var(--ink); }
+.truth-e2 { color: var(--mfg); }
+
+/* ------------------------------------------------- the film (with JS) */
+
+.js .truth-crack {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.truth-crack path {
+  fill: none;
+  stroke: rgba(5, 5, 5, 0.9);
+  stroke-width: 0.022em;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  vector-effect: non-scaling-stroke;
+}
+.js .truth-shard {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.js .truth-copy {
+  position: absolute;
+  left: max(50vw, 620px);
+  right: max(var(--gutter), 6vw);
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.js .truth-pre { font-size: clamp(30px, 3.6vw, 56px); }
+
+@media (max-width: 759px) {
+  .truth-stage { --F3: 23vw; }
+  .js .truth-copy { left: 16px; right: 16px; top: 76px; bottom: auto; display: block; }
+  .js .truth-pre { font-size: 30px; }
+  .truth-slot { margin-top: 12px; }
+  .truth-lead { font-size: 17px; }
+  .truth-end { font-size: 26px; }
+}

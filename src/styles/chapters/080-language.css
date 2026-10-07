@@ -1,0 +1,348 @@
+/* 080 · language — "It learns your business language before it answers."
+   The dot draws each link from a business word to its column, flips a Prism thread from
+   English to Arabic as the knob of its switch, then visits every database where the data lives. */
+
+.lang-stage { --lang-link: rgba(201, 241, 68, 0.9); }
+.lang-stage code, .lang-db-uri, .lang-def { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0; }
+
+/* -------------------------------------------------------------- type */
+
+.lang-title { font-size: clamp(30px, 4vw, 64px); line-height: 1.02; }
+.lang-ln { display: block; overflow: hidden; padding-bottom: 0.2em; margin-bottom: -0.2em; }
+.lang-ln > span { display: block; }
+.lang-t2 { margin-top: 64px; }
+
+/* ----------------------------------------------------- words → columns */
+
+.lang-map { position: relative; display: flex; gap: 48px; margin: 40px 0; }
+.lang-col { display: flex; flex-direction: column; gap: clamp(10px, 2vh, 18px); }
+.lang-terms { align-items: flex-end; }
+.lang-cols { align-items: flex-start; }
+.lang-eyebrow { margin: 0 0 6px; color: var(--dim); }
+.lang-term, .lang-colm {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: clamp(42px, 6vh, 54px);
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)), #0b0c09;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 12px 30px -14px rgba(0, 0, 0, 0.9);
+  white-space: nowrap;
+  transition: border-color 0.35s, background 0.35s, color 0.35s, box-shadow 0.35s;
+}
+.lang-term {
+  padding: 0 24px 0 24px;
+  font: 500 clamp(17px, 1.45vw, 23px)/1 var(--sans);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  cursor: pointer;
+}
+.lang-term-t { padding-top: 2px; }
+.lang-colm {
+  padding: 0 22px 0 22px;
+  font: 400 clamp(13px, 1.08vw, 16px)/1 var(--mono);
+  color: var(--ink-2);
+}
+.lang-colm code { font: inherit; }
+/* the ports sit on the chips' edges, facing each other */
+.lang-pip {
+  position: absolute;
+  top: 50%;
+  display: block;
+  width: 9px;
+  height: 9px;
+  margin-top: -4.5px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(242, 244, 238, 0.4);
+  background: #0b0c09;
+  transition: background 0.35s, border-color 0.35s;
+}
+.lang-term .lang-pip { right: -5px; }
+.lang-colm .lang-pip { left: -5px; }
+.lang-term.is-linked { border-color: rgba(201, 241, 68, 0.38); }
+.lang-term.is-linked .lang-pip,
+.lang-colm.is-linked .lang-pip { background: var(--ink); border-color: var(--ink); }
+.lang-colm.is-linked { color: var(--ink); border-color: rgba(242, 244, 238, 0.26); }
+.lang-colm.is-hit { border-color: rgba(201, 241, 68, 0.7); box-shadow: 0 0 0 4px rgba(201, 241, 68, 0.08), 0 0 36px -6px rgba(201, 241, 68, 0.45); }
+.lang-term.is-hot, .lang-term:focus-visible { border-color: var(--lime); background: linear-gradient(180deg, rgba(201, 241, 68, 0.12), rgba(201, 241, 68, 0.03)), #0b0c09; }
+.lang-colm.is-hot { border-color: rgba(201, 241, 68, 0.6); color: var(--ink); }
+.lang-term.is-dim, .lang-colm.is-dim { opacity: 0.32; }
+.lang-def {
+  margin: 0;
+  font: 500 12px/1 var(--mono);
+  letter-spacing: 0.04em;
+  color: var(--lime);
+  white-space: nowrap;
+}
+.lang-def:not([data-i='0']) { color: var(--ink-2); }
+/* a label on the diagram: the web of lines passes behind it */
+.js .lang-def {
+  padding: 4px 8px 3px;
+  border-radius: 6px;
+  background: var(--bg);
+  box-shadow: 0 0 0 1px rgba(201, 241, 68, 0.18);
+}
+.js .lang-def:not([data-i='0']) { box-shadow: 0 0 0 1px rgba(242, 244, 238, 0.12); }
+
+/* ------------------------------------------- the switch to Arabic: a thread */
+
+.lang-t3 { margin-top: 64px; }
+.lang-card {
+  position: relative;
+  width: min(620px, 100%);
+  margin: 28px auto 0;
+  padding: 16px 22px 22px;
+  overflow: hidden;
+}
+/* EN | ع - with JS the dot is its knob while it flips */
+.lang-sw {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 0 16px;
+  font: 500 12px/1 var(--mono);
+  letter-spacing: 0.1em;
+  color: var(--mfg);
+}
+.lang-sw-en, .lang-sw-ar { transition: color 0.35s; }
+/* ع's ink sits low in its line box; lift it level with EN */
+.lang-sw-ar { position: relative; top: -2px; font: 700 18px/1 var(--sans); letter-spacing: 0; }
+.lang-sw-track {
+  position: relative;
+  display: block;
+  width: 52px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: rgba(255, 255, 255, 0.04);
+  transition: background 0.35s, border-color 0.35s;
+}
+.lang-sw-knob {
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  border-radius: 50%;
+  background: var(--ink-2);
+}
+.lang-card:not(.is-ar) .lang-sw-en { color: var(--ink); }
+.lang-card.is-ar .lang-sw-ar { color: var(--ink); }
+.lang-card.is-ar .lang-sw-track { background: rgba(201, 241, 68, 0.12); border-color: rgba(201, 241, 68, 0.45); }
+.lang-card.is-ar .lang-sw-knob { left: auto; right: 4px; background: var(--lime); box-shadow: 0 0 10px rgba(201, 241, 68, 0.6); }
+
+/* English, and the same thread in Arabic, right to left; with JS they share one cell and the sweep turns one into the other */
+.lang-faces { display: grid; gap: 18px; }
+.lang-face { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.js .lang-face { grid-area: 1 / 1; }
+html:not(.js) .lang-face-ar { padding-top: 18px; border-top: 1px solid var(--line); }
+.lang-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  font: 700 15px/1 var(--sans);
+  color: var(--ink);
+}
+.lang-head-pip { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--dim); }
+/* the source sits at the far end of the header; it reads left to right (dir="ltr") in both faces,
+   so in the Arabic one its free side is set physically */
+.lang-src { margin-inline-start: auto; font: 400 12px/1 var(--mono); color: var(--mfg); }
+.lang-face-ar .lang-src { margin-left: 0; margin-right: auto; }
+.lang-you {
+  align-self: flex-end;
+  max-width: 84%;
+  margin: 2px 0 0;
+  padding: 11px 16px;
+  border-radius: 16px 16px 4px 16px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.06);
+  font: 400 17px/1.4 var(--sans);
+  color: var(--ink);
+}
+.lang-face-ar .lang-you { border-radius: 16px 16px 16px 4px; }
+.lang-think { display: flex; align-items: baseline; gap: 10px; margin: 0; font: 400 14px/1.45 var(--sans); color: var(--mfg); }
+.lang-agents { flex: none; font: 500 11px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+.lang-face-ar .lang-agents { font: 700 13px/1 var(--sans); letter-spacing: 0; }
+.lang-think code { padding: 1px 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.05); font: 400 13px/1.4 var(--mono); color: var(--ink-2); }
+.lang-ans {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 241, 68, 0.22);
+  background: rgba(201, 241, 68, 0.05);
+  font: 400 17px/1.45 var(--sans);
+  color: var(--ink);
+}
+.lang-ans b { font-weight: 700; color: var(--lime); }
+/* the answer's verified light: in Arabic, the dot itself lands in it */
+.lang-check { flex: none; width: 18px; height: 18px; margin-top: 3px; border-radius: 50%; border: 1.5px solid rgba(201, 241, 68, 0.55); }
+.lang-face-en .lang-check,
+html:not(.js) .lang-check,
+.lang-card.is-lit .lang-check { background: radial-gradient(circle, var(--lime) 0 4px, transparent 4.5px); }
+/* the line that turns the card over, right to left */
+.lang-sweep {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, var(--lime) 18%, var(--lime) 82%, transparent);
+  box-shadow: 0 0 18px rgba(201, 241, 68, 0.55);
+  opacity: 0;
+  pointer-events: none;
+}
+.lang-lead { margin: 18px 0 0; text-align: center; color: var(--ink-2); }
+.lang-lead2 { margin: 14px 0 0; color: var(--ink-2); }
+
+/* --------------------------------------------------------- databases */
+
+.lang-dbs { list-style: none; margin: 32px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 12px; }
+.lang-db {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 200px;
+  height: 66px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1px solid var(--line-2);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01) 60%), #0b0c09;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 40px -18px rgba(0, 0, 0, 0.95);
+  transition: border-color 0.4s, box-shadow 0.4s, background 0.4s;
+}
+.lang-glyph {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  padding: 4px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  fill: none;
+  stroke: var(--mfg);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.4s, border-color 0.4s;
+}
+.lang-db-t { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.lang-db-name { font: 700 17px/1 var(--sans); letter-spacing: -0.01em; color: var(--ink-2); padding-top: 2px; transition: color 0.4s; }
+.lang-db-uri { font: 400 11px/1 var(--mono); color: var(--dim); transition: color 0.4s; }
+.lang-db.is-on { border-color: rgba(201, 241, 68, 0.42); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 0 0 1px rgba(201, 241, 68, 0.08), 0 20px 50px -18px rgba(201, 241, 68, 0.25); }
+.lang-db.is-on .lang-glyph { stroke: var(--ink); border-color: rgba(201, 241, 68, 0.35); }
+.lang-db.is-on .lang-db-name { color: var(--ink); }
+.lang-db.is-on .lang-db-uri { color: var(--mfg); }
+.lang-db:hover { border-color: rgba(201, 241, 68, 0.6); }
+
+.lang-hub { display: none; }
+.lang-svg { display: none; }
+
+/* -------------------------------------------------- the film (with JS) */
+
+.js .lang-svg {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  overflow: visible;
+  pointer-events: none;
+}
+.lang-svg path, .lang-svg line { fill: none; stroke-linecap: round; }
+.lang-svg .lang-ghost { stroke: rgba(242, 244, 238, 0.1); stroke-width: 1.2; stroke-dasharray: 2 6; }
+.lang-svg .lang-link { stroke: var(--lang-link); stroke-width: 1.8; }
+.lang-svg .lang-link-g { stroke: var(--lime); stroke-width: 7; opacity: 0.12; }
+.lang-svg .lang-link.is-hot { stroke: var(--lime); stroke-width: 2.6; }
+.lang-svg .lang-ray { stroke: rgba(201, 241, 68, 0.5); stroke-width: 1.1; }
+.lang-svg .lang-ray-flow { stroke: rgba(230, 255, 160, 0.9); stroke-width: 1.4; stroke-dasharray: 2 26; opacity: 0; }
+.lang-svg .lang-tether { stroke: rgba(201, 241, 68, 0.85); stroke-width: 1.3; }
+.lang-flowing .lang-svg .lang-ray-flow { animation: lang-flow 1.6s linear infinite; }
+@keyframes lang-flow { to { stroke-dashoffset: -28; } }
+
+.js .lang-title {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  top: clamp(92px, 12.5vh, 124px);
+  margin: 0;
+  text-align: center;
+}
+.js .lang-map {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 6vh);
+  margin: 0;
+  transform: translate(-50%, -50%);
+  gap: clamp(220px, 24vw, 380px);
+}
+.js .lang-def { position: absolute; left: 0; top: 0; opacity: var(--o, 0); pointer-events: none; transition: opacity 0.25s; }
+.js .lang-def.is-hot { opacity: var(--vis, 1); }
+/* the card, its lead and "Read-only" are placed by layout() */
+.js .lang-card { position: absolute; left: 0; top: 0; margin: 0; width: min(620px, calc(100vw - 2 * var(--gutter))); }
+.js .lang-lead, .js .lang-lead2 {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  top: 0;
+  margin: 0;
+  text-align: center;
+}
+.js .lang-term, .js .lang-colm, .js .lang-eyebrow, .js .lang-card, .js .lang-lead, .js .lang-lead2 { opacity: 0; }
+.js .lang-dbs { position: absolute; inset: 0; margin: 0; display: block; pointer-events: none; }
+.js .lang-db { position: absolute; left: 0; top: 0; opacity: 0; pointer-events: auto; }
+.js .lang-hub {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 241, 68, 0.35);
+  opacity: 0;
+}
+.js .lang-label { opacity: 0; }
+
+/* ------------------------------------------------------------- phone */
+
+@media (max-width: 759px) {
+  .lang-title { font-size: clamp(27px, 7.6vw, 34px); }
+  .js .lang-title { top: 84px; }
+  .js .lang-map { top: calc(50% + 64px); gap: clamp(64px, 22vw, 110px); }
+  .lang-col { gap: 12px; }
+  .lang-term, .lang-colm { height: 40px; gap: 10px; }
+  .lang-term { padding: 0 14px; font-size: 15px; }
+  .lang-colm { padding: 0 12px; font-size: 10.5px; }
+  .lang-pip { width: 8px; height: 8px; }
+  .lang-def { font-size: 10px; }
+  .lang-def[data-i='0']::before { content: 'late delivery = '; color: var(--mfg); }
+  .lang-card { padding: 12px 14px 16px; }
+  .lang-sw { margin-bottom: 12px; }
+  .lang-head { font-size: 13.5px; padding-bottom: 12px; }
+  .lang-face { gap: 12px; }
+  .lang-you, .lang-ans { font-size: 14.5px; }
+  .lang-you { padding: 9px 13px; }
+  .lang-ans { padding: 12px 13px; gap: 10px; }
+  .lang-check { width: 16px; height: 16px; margin-top: 2px; }
+  .lang-think { font-size: 12.5px; }
+  .lang-think code { font-size: 11.5px; }
+  .lang-lead, .lang-lead2 { font-size: 16px; margin-top: 12px; }
+  .lang-db { width: 128px; height: 50px; padding: 0 10px; gap: 8px; border-radius: 12px; }
+  .lang-glyph { width: 24px; height: 24px; padding: 3px; border-radius: 7px; }
+  .lang-db-name { font-size: 13.5px; }
+  .lang-db-uri { display: none; }
+}
+
+.reduced .lang-svg .lang-ray-flow { animation: none; }
+html:not(.js) .lang-def { display: none; }
