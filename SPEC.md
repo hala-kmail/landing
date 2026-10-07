@@ -54,18 +54,28 @@ Never present AI as the source of the wrong number: the old way is a ticket to a
 
 ## Look
 
-- Ground: near-black `--bg #050505`. Cinematic: generous negative space, one clear subject per moment, soft light.
-- **Lime `#c9f144` (`--lime`) means Prism / the truth.** Use it only for Prism: the dot when it is Prism, a verified check,
-  a true answer, a Prism highlight, the primary CTA. Never for the old way.
+- **Two themes; light is the default.** `src/styles/base.css` holds the product's light palette (exactly as given, in
+  `:root`) and maps the site's tokens onto it; the dark film is `:root[data-theme='dark']`, its values unchanged. A new
+  visitor always gets light, whatever the system prefers; the nav's switch (`ThemeToggle.tsx`) saves a choice as
+  `prism-theme`, and the head script in `layout.tsx` applies a saved dark before the first paint. Components use the
+  site's tokens (`--bg`, `--ink`, `--lime`...), never the palette's names; a colour a chapter needs of its own is a token
+  defined twice at the top of its CSS (light, then dark). Tints are `color-mix()` of a token: `--hi` for hairlines and
+  faint fills (white in dark, ink in light), `--sheen` for a surface's top light, `--shade` for shadows. The motion reads
+  colours through `COLORS` / `tone('--token')` at draw time, so a theme switch redraws everything.
+- Ground: `--bg` — the palette's `--background` in light, near-black `#050505` in dark. Cinematic: generous negative
+  space, one clear subject per moment, soft light.
+- **`--lime` means Prism / the truth** — lime `#c9f144` in dark, the brand's `--primary #62728f` in light. Use it only
+  for Prism: the dot when it is Prism, a verified check, a true answer, a Prism highlight, the primary CTA. Never for
+  the old way.
 - The old way (tickets, the queue, the BI report): desaturated greys; **amber `--amber`** only for "waiting".
 - A guess / the wrong number: **rose `--rose`**, sparingly.
-- Ink `--ink #f2f4ee` for display text, `--ink-2` for leads, `--mfg` for labels, `--dim` for the faintest.
+- Ink `--ink` for display text, `--ink-2` for leads, `--mfg` for labels, `--dim` for the faintest.
 - Type (classes in `src/styles/base.css`): `.display` (hero), `.h2` (chapter headline), `.h3`, `.lead`, `.eyebrow`/`.label`
   (JetBrains Mono uppercase), `.mono`, `.tnum`. Brand font is **Tajawal** (`--sans`); mono is JetBrains Mono (`--mono`);
   Inter (`--ui`) only if you need a neutral third-party UI look. Display text: weight 700, letter-spacing -0.035em.
 - On-screen words support the story, they do not narrate it: few words, large or small, never a paragraph.
   One headline per beat, optionally one short lead line.
-- Product surfaces (Prism UI vignettes): `.card` (dark, hairline border, radius 16, inner highlight, big soft shadow),
+- Product surfaces (Prism UI vignettes): `.card` (`--card`, hairline border, `--radius`, inner highlight, soft shadow),
   `.chip`, `.chip.lime`, `.btn`, `.btn.primary`. Make them look like the real app — it lives in
   `../frontend/frontend/src/features/workspace/components/` (e.g. `clarification-form.tsx`, `thread-panel.tsx`,
   `canvas-runs.tsx`, `dashboard-grid.tsx`) and `../frontend/frontend/src/styles/global.css`. Simplify; never screenshot.

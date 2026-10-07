@@ -10,11 +10,10 @@
  */
 import { chapter, seg, win, clamp, lerp, E, COLORS, mix, impulse } from '../core.js'
 import {
-  splitWords, playWords, css, bump, STOP, TRUE_INK, DIM,
+  splitWords, playWords, css, bump, STOP, KIT,
   buildStack, layoutStack, placeStack, stopAt, lerpPose, labelAlpha, setLabels,
 } from './030-number.kit.js'
 
-const ROSE = COLORS.rose
 
 const PRE = [0.04, 0.11]
 const RISE = [0.085, 0.19]
@@ -172,7 +171,7 @@ chapter({
     /* 1,180: tinted, cracked from where the dot sat, then shattered */
     const tint = E.inOut(seg(p, TINT[0], TINT[1]))
     const shatter = seg(p, SHATTER[0], SHATTER[1])
-    const col = tint > 0 ? mix('#f2f4ee', ROSE, tint) : ''
+    const col = tint > 0 ? mix(COLORS.ink, COLORS.rose, tint) : ''
     css(S.fig, 'color', col)
     const cm = E.inOut(seg(p, CRACK[0], CRACK[1]))
     const cb = E.inOut(seg(p, BRANCH[0], BRANCH[1]))
@@ -219,7 +218,7 @@ chapter({
 
     // the seam: still the rose full stop of 1,180
     if (p < HOP[0]) {
-      return { x: from.x, y: from.y, r: from.r, color: ROSE, glow: 0.6, halo: 2.1, lean: 0, lag: 0, blink: false, stretch: 0.3 }
+      return { x: from.x, y: from.y, r: from.r, color: COLORS.rose, glow: 0.6, halo: 2.1, lean: 0, lag: 0, blink: false, stretch: 0.3 }
     }
 
     // where 4,630's full stop is right now (it rises out of its mask)
@@ -234,7 +233,7 @@ chapter({
         x: lerp(from.x, to.x, ue),
         y: lerp(from.y, to.y, ue) - Math.sin(Math.PI * u) * vh * 0.14,
         r: lerp(from.r, to.r, ue),
-        color: mix(ROSE, TRUE_INK, E.inOut(seg(u, 0.2, 0.9))),
+        color: mix(COLORS.rose, KIT.trueInk, E.inOut(seg(u, 0.2, 0.9))),
         glow: lerp(0.6, 0.55, ue), halo: 2.1, lean: 0, lag: 0.035, blink: false, stretch: 0.7,
       }
     }
@@ -242,7 +241,7 @@ chapter({
     // the full stop of the real number - it stays while everything else goes
     if (p < HOME[0]) {
       return {
-        x: to.x, y: to.y, r: to.r, color: TRUE_INK,
+        x: to.x, y: to.y, r: to.r, color: KIT.trueInk,
         glow: 0.55 - 0.15 * fade, halo: 2.1, lean: 0, lag: 0, blink: false, stretch: 0.2,
       }
     }
@@ -255,7 +254,7 @@ chapter({
       x: lerp(to.x, vw / 2, ue),
       y: lerp(to.y, vh / 2, ue) + Math.sin(Math.PI * u) * vh * 0.05,
       r: lerp(to.r, 6, uo),
-      color: mix(TRUE_INK, DIM, uo),
+      color: mix(KIT.trueInk, KIT.dim, uo),
       glow: lerp(0.4, 0.25, uo), halo: lerp(2.1, 3, uo),
       lean: 0, lag: u < 1 ? 0.04 : 0.05, blink: u >= 1, stretch: 0.5,
     }

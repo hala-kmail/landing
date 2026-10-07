@@ -8,16 +8,19 @@
  *
  * No side effects on import: 030-number and 040-truth both build on it.
  */
-import { clamp, lerp, E } from '../core.js'
+import { clamp, lerp, E, COLORS, tone } from '../core.js'
 
 /** Tajawal 700 '.' in em: ink centre x from the glyph origin, centre height above the baseline, radius, advance. */
 export const STOP = { cx: 0.164, cy: 0.064, r: 0.079, adv: 0.328 }
 /** Tajawal 700 digit cap height in em. */
 export const CAP = 0.656
 
-export const BELIEVED = '#d4d7cd' // the number everybody believed: neutral ink-grey
-export const TRUE_INK = '#e9ebe4'
-export const DIM = '#8a8d84'
+/** The kit's colours in the current theme (tokens in 030-number.css): read them when drawing. */
+export const KIT = {
+  get believed() { return tone('--num-believed') }, // the number everybody believed: neutral ink-grey
+  get trueInk() { return tone('--num-true-ink') },
+  get dim() { return COLORS.grey },
+}
 
 /** sin bump that peaks early and dies out over t in 0..1 (a landing, a jolt). */
 export const bump = (t) => (t <= 0 || t >= 1 ? 0 : Math.sin(Math.PI * t) * (1 - t) * 1.55)

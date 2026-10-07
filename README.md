@@ -41,6 +41,10 @@ npm run lint
 - `src/motion/autoplay.js` - "Watch how it thinks": the story plays itself from beat to beat
   until the visitor scrolls, taps or presses a key. Its beats and timings are one table.
 - `src/motion/brand.js` - the PRISM wordmark as vector letters, and where the tittle sits.
+- Themes: light is the default, the original dark film is the alternative. `src/styles/base.css` holds both
+  (`:root` and `:root[data-theme='dark']`); `src/components/ThemeToggle.tsx` is the switch in the nav and saves the
+  choice (`prism-theme` in localStorage), and the head script in `layout.tsx` applies a saved dark theme before the
+  first paint. The system's dark-mode setting is deliberately ignored. See "Look" in `SPEC.md`.
 - `public/assets/` - fonts and brand files, served from `/assets/...`.
 
 GSAP and Lenis come from npm (`gsap`, `lenis`). The page renders nothing on the client
@@ -54,6 +58,7 @@ through React state, so React never re-renders the markup the motion code animat
 ```bash
 npm run shot -- --at asks:0,0.5,1 --size 1440x900 --size 390x844 --sheet asks
 npm run shot -- --url http://localhost:3001/ --all 0.3,0.6 --out .shots/prod
+npm run shot -- --theme dark --at why:0.5 --size 1440x900   # the dark theme
 ```
 
 ## Deploy

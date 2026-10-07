@@ -24,7 +24,6 @@ const SIDE = { P: -2, R: -1, S: 1, M: 2 }
 const easeDraw = gsap.parseEase('power2.inOut')
 const easeStem = gsap.parseEase('back.out(1.25)')
 const easeFly = gsap.parseEase('power2.inOut')
-const { lime: LIME, ink: INK } = COLORS
 
 // scroll beats (chapter progress)
 const SETTLE = [0.1, 0.25] // the logo, alone now (the h1 has gone by ~0.15), settles toward the middle of the frame
@@ -175,9 +174,9 @@ const def = {
       g.setAttribute('r', 300)
       if (gt) g.setAttribute('gradientTransform', gt)
       g.innerHTML =
-        `<stop offset="0" stop-color="${mix(INK, LIME, 0.5)}"/>` +
-        `<stop offset="0.38" stop-color="${mix(INK, LIME, 0.14)}"/>` +
-        `<stop offset="1" stop-color="${INK}"/>`
+        `<stop offset="0" stop-color="${mix(COLORS.ink, COLORS.lime, 0.5)}"/>` +
+        `<stop offset="0.38" stop-color="${mix(COLORS.ink, COLORS.lime, 0.14)}"/>` +
+        `<stop offset="1" stop-color="${COLORS.ink}"/>`
       defs.appendChild(g)
       return g
     }
@@ -250,6 +249,12 @@ const def = {
 
   layout(ctx) {
     const s = ctx.state
+    // the light's outer stops are the theme's (layout runs again when it changes); render keeps the inner one
+    for (const g of s.grads) {
+      g.children[1].setAttribute('stop-color', mix(COLORS.ink, COLORS.lime, 0.14))
+      g.children[2].setAttribute('stop-color', COLORS.ink)
+    }
+    s.light.c = null
     s.svg.style.transform = 'none'
     s.mark.style.transform = 'none'
     s.tilt.x = s.tilt.y = 0
@@ -299,7 +304,7 @@ const def = {
 
     // touch-down one-shots, forward only
     if (s.lastIt < LAND && it >= LAND && it < LAND + 0.5) {
-      ring(LIME)
+      ring(COLORS.lime)
       s.bumpT = ctx.time
       s.bumpA = 0.075
     }
@@ -394,7 +399,7 @@ const def = {
       x,
       y,
       r,
-      color: LIME,
+      color: COLORS.lime,
       glow: lerp(b.glow, 1, f) * (1 + 0.35 * bell(p, FLIGHT[0], 0.56)),
       halo: lerp(HALO, 3, g),
       sx: b.sx * (1 + 0.22 * c) * (1 + 0.12 * blink),
@@ -427,7 +432,7 @@ const def = {
         g.setAttribute('cy', ly.toFixed(1))
       }
     }
-    const lc = mix(INK, LIME, clamp(0.5 * D.glow * D.alpha, 0, 0.78))
+    const lc = mix(COLORS.ink, COLORS.lime, clamp(0.5 * D.glow * D.alpha, 0, 0.78))
     if (lc !== s.light.c) {
       s.light.c = lc
       for (const st of s.gStops) st.setAttribute('stop-color', lc)

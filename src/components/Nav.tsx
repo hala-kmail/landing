@@ -1,3 +1,5 @@
+import ThemeToggle from '@/components/ThemeToggle'
+
 /** The top bar. core.js marks <html> .is-scrolled once the story has moved; base.css styles it from there. */
 export default function Nav() {
   return (
@@ -9,6 +11,7 @@ export default function Nav() {
         <a href="#ch-questions">The story</a>
         <a href="#ch-asks">How it works</a>
         <a href="#ch-hands">Security</a>
+        <ThemeToggle />
         <a className="btn primary" href="https://demo.orapex.com/playground" rel="noopener">
           Open the playground
         </a>

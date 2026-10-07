@@ -10,13 +10,12 @@
  * falls, turning rose. It ends back on the number, rose now: the frame 040-truth
  * starts from.
  */
-import { chapter, seg, win, clamp, lerp, E, COLORS, mix, impulse } from '../core.js'
+import { chapter, seg, win, clamp, lerp, E, COLORS, mix, impulse, tone } from '../core.js'
 import {
-  splitWords, playWords, css, bump, BELIEVED,
+  splitWords, playWords, css, bump, KIT,
   buildStack, layoutStack, lerpPose, placeStack, stopAt, smoothPath, labelAlpha, setLabels,
 } from './030-number.kit.js'
 
-const ROSE = COLORS.rose
 
 /* beats */
 const H1 = { in: [0.0, 0.065], out: [0.19, 0.235] }
@@ -283,7 +282,7 @@ chapter({
     const figIn = seg(p, 0.075, 0.105)
     css(S.fig, 'opacity', figIn.toFixed(3))
     const lift = E.inOut(seg(p, LIFT[0], LIFT[1]))
-    css(S.fig, 'color', lift >= 1 ? '' : mix('#cfd2c8', '#f2f4ee', lift))
+    css(S.fig, 'color', lift >= 1 ? '' : mix(tone('--num-fig-start'), COLORS.ink, lift))
     const capA = E.out(seg(p, 0.275, 0.31)) * (1 - seg(p, 0.35, 0.38))
     css(S.cap, 'opacity', capA.toFixed(3))
     css(S.cap, 'transform', `translate3d(0, ${(-S.m.F * 0.08 - (1 - capA) * 8).toFixed(2)}px, 0)`)
@@ -319,7 +318,7 @@ chapter({
 
     // the seam: the resolved ticket's status light
     if (p < TO_KPI[0]) {
-      return { x: s.sockAt.x, y: s.sockAt.y, r: 5, color: BELIEVED, glow: 0.42, halo: 2.8, lean: 0, lag: 0, blink: false, stretch: 0.3 }
+      return { x: s.sockAt.x, y: s.sockAt.y, r: 5, color: KIT.believed, glow: 0.42, halo: 2.8, lean: 0, lag: 0, blink: false, stretch: 0.3 }
     }
     const pose = this.pose(p, ctx)
     const st = stopAt(S, pose)
@@ -331,7 +330,7 @@ chapter({
       return {
         x: lerp(s.sockAt.x, st.x, ue),
         y: lerp(s.sockAt.y, st.y, ue) - Math.sin(Math.PI * u) * ctx.vh * 0.06,
-        r: lerp(5, st.r, ue), color: BELIEVED, glow: 0.45, halo: lerp(2.8, 2.2, ue), lean: 0, lag: 0.03, blink: false,
+        r: lerp(5, st.r, ue), color: KIT.believed, glow: 0.45, halo: lerp(2.8, 2.2, ue), lean: 0, lag: 0.03, blink: false,
       }
     }
 
@@ -341,7 +340,7 @@ chapter({
       for (const L of LAND) press += bump(seg(p, L, L + 0.03))
       const disp = win(p, LIFT[1] - 0.02, TO_FOUND[1], 0.03, 0.06)
       return {
-        x: st.x, y: st.y, r: st.r, color: BELIEVED,
+        x: st.x, y: st.y, r: st.r, color: KIT.believed,
         glow: 0.45 + 0.2 * disp, halo: 2.1, lean: 0, lag: 0, blink: false, stretch: 0.2,
         sx: 1 + 0.2 * press, sy: 1 - 0.22 * press,
       }
@@ -355,7 +354,7 @@ chapter({
       const fall = clamp((tip.y - c.y0) / (c.yLow - c.y0))
       const r0 = lerp(end.r, 7, E.out(seg(p, RIDE[0], RIDE[0] + 0.03)))
       return {
-        x: tip.x, y: tip.y, r: r0, color: mix(BELIEVED, ROSE, E.out(fall)),
+        x: tip.x, y: tip.y, r: r0, color: mix(KIT.believed, COLORS.rose, E.out(fall)),
         glow: 0.55 + 0.35 * fall, halo: 2.6, lean: 0, lag: 0, blink: false, stretch: 0.5,
       }
     }
@@ -367,7 +366,7 @@ chapter({
     return {
       x: lerp(from.x, end.x, ue),
       y: lerp(from.y, end.y, ue) - Math.sin(Math.PI * u) * ctx.vh * 0.16,
-      r: lerp(7, end.r, ue), color: ROSE, glow: lerp(0.9, 0.6, ue), halo: lerp(2.6, 2.1, ue),
+      r: lerp(7, end.r, ue), color: COLORS.rose, glow: lerp(0.9, 0.6, ue), halo: lerp(2.6, 2.1, ue),
       lean: 0, lag: u < 1 ? 0.035 : 0, blink: false, stretch: 0.6,
     }
   },

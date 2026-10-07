@@ -1,5 +1,9 @@
 /* questions (010) - every company runs on questions: a fly-through, and the one that matters. */
 
+/* colours (read by 010-questions.js): the light theme's (the default), then the dark film's */
+:root { --q-dim: color-mix(in oklab, var(--ink) 36%, var(--bg)); }
+:root[data-theme='dark'] { --q-dim: #4c4f47; }
+
 .questions-stage {
   --q-base: clamp(26px, 3.1vw, 46px);
   text-align: center;
@@ -74,7 +78,7 @@ html:not(.js) .questions-field {
   transition: text-shadow 0.35s;
 }
 .js .questions-q.is-hot {
-  text-shadow: 0 0 22px rgba(242, 244, 238, 0.35);
+  text-shadow: 0 0 22px color-mix(in srgb, var(--ink) 35%, transparent);
 }
 
 .questions-dust { display: none; }
@@ -151,7 +155,7 @@ html:not(.js) .questions-field {
   height: 36px;
   border-radius: 50%;
   border: 1px solid var(--line-2);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)), var(--card);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--sheen) 8%, transparent), color-mix(in srgb, var(--sheen) 2%, transparent)), var(--card);
   font: 500 11px/1 var(--mono);
   letter-spacing: 0.06em;
   color: var(--ink-2);

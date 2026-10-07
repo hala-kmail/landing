@@ -12,6 +12,13 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(__dirname),
   },
+
+  experimental: {
+    // The light palette's oklch() values ship exactly as written. By default the minifier
+    // (Lightning CSS) rewrites them as lab() with hex fallbacks for Firefox 111-112; the
+    // page already needs color-mix(), which arrived in Firefox 113 together with oklch().
+    lightningCssFeatures: { exclude: ["oklab-colors"] },
+  },
 };
 
 export default nextConfig;

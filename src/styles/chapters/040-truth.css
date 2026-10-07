@@ -35,7 +35,7 @@ html:not(.js) .truth-stack { display: none; }
   color: var(--ink);
   font-weight: 700;
   text-decoration: underline 1px;
-  text-decoration-color: rgba(242, 244, 238, 0.4);
+  text-decoration-color: color-mix(in srgb, var(--ink) 40%, transparent);
   text-underline-offset: 0.18em;
 }
 .truth-end {
@@ -60,7 +60,7 @@ html:not(.js) .truth-stack { display: none; }
 }
 .truth-crack path {
   fill: none;
-  stroke: rgba(5, 5, 5, 0.9);
+  stroke: color-mix(in srgb, var(--bg) 90%, transparent);
   stroke-width: 0.022em;
   stroke-linecap: round;
   stroke-linejoin: round;

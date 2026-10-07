@@ -8,6 +8,7 @@
 //                       [--all 0,0.25,0.5,0.75,1]   every chapter at these progresses
 //                       [--reduced]      emulate prefers-reduced-motion
 //                       [--eval "js"]    run JS in the page before each shot (after scrolling)
+//                       [--theme dark]   load with this theme saved (light is the site's default)
 //
 // Prints one line per PNG, then any console errors / page errors, so a run
 // that throws is never mistaken for a clean one. Files: <out>/<size>/<id>-<p>.png
@@ -30,7 +31,7 @@ if (!chromium) {
 }
 
 const args = process.argv.slice(2)
-const opt = { url: 'http://localhost:3000/', at: [], sizes: [], out: '.shots/default', wait: 900, pointer: null, dpr: 1, sheet: null, all: null, reduced: false, eval: null }
+const opt = { url: 'http://localhost:3000/', at: [], sizes: [], out: '.shots/default', wait: 900, pointer: null, dpr: 1, sheet: null, all: null, reduced: false, eval: null, theme: null }
 for (let i = 0; i < args.length; i++) {
   const a = args[i]
   if (a === '--at') while (args[i + 1] && !args[i + 1].startsWith('--')) opt.at.push(args[++i])
@@ -44,6 +45,7 @@ for (let i = 0; i < args.length; i++) {
   else if (a === '--all') opt.all = args[++i].split(',').map(Number)
   else if (a === '--reduced') opt.reduced = true
   else if (a === '--eval') opt.eval = args[++i]
+  else if (a === '--theme') opt.theme = args[++i]
 }
 if (!opt.sizes.length) opt.sizes.push('1440x900')
 
@@ -70,6 +72,7 @@ try {
       hasTouch: mobile,
       reducedMotion: opt.reduced ? 'reduce' : 'no-preference',
     })
+    if (opt.theme) await context.addInitScript((t) => localStorage.setItem('prism-theme', t), opt.theme)
     const page = await context.newPage()
     page.on('console', (m) => {
       if (m.type() === 'error' || m.type() === 'warning') errors.push(`[${size}] console.${m.type()}: ${m.text()}`)

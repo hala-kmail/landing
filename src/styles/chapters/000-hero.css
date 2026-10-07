@@ -118,7 +118,7 @@
   display: block;
   width: 1px;
   height: clamp(30px, 5vh, 46px);
-  background: linear-gradient(180deg, rgba(242, 244, 238, 0.3), rgba(242, 244, 238, 0.04));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--ink) 30%, transparent), color-mix(in srgb, var(--ink) 4%, transparent));
 }
 .hero-cue-line b {
   position: absolute;

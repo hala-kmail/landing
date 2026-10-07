@@ -11,14 +11,8 @@
 // goes) and leaves the lit dot alone, and the bridge - "Same Monday · Same
 // question." - uses it as its middle dot, and holds. Ends on the dot alone at
 // the centre, r 10, lime (into asks).
-import { chapter, seg, clamp, lerp, E, COLORS, mix, rng, ring } from '../core.js'
+import { chapter, seg, clamp, lerp, E, COLORS, mix, rng, ring, tone } from '../core.js'
 
-const LIME = COLORS.lime
-const GREY = COLORS.grey
-const INK = '#f2f4ee'
-const DARK = '#3f423b' // "Prism" before the light reaches it
-const L1_DARK = '#6f7269'
-const L1_LIT = '#c9ccc2'
 
 // geometry of Tajawal 700's "i", measured from the glyph (em units)
 const TIT_X = 0.1275 // tittle centre from the glyph origin (over the dotless stem)
@@ -140,8 +134,8 @@ chapter({
     const s = ctx.state
 
     // ignition one-shots, forward only
-    if (s.last < IGN && p >= IGN && p < IGN + 0.08) ring(LIME)
-    if (s.last < IGN + 0.025 && p >= IGN + 0.025 && p < IGN + 0.1) ring('#eaffb0')
+    if (s.last < IGN && p >= IGN && p < IGN + 0.08) ring(COLORS.lime)
+    if (s.last < IGN + 0.025 && p >= IGN + 0.025 && p < IGN + 0.1) ring(tone('--why-spark'))
     s.last = p
 
     // a slow push-in, around the dot
@@ -151,7 +145,7 @@ chapter({
 
     // line 1: "That's why we built" rises out of its mask, word by word
     const lit = E.out(seg(p, IGN, IGN + 0.08))
-    s.l1.style.color = mix(L1_DARK, L1_LIT, lit)
+    s.l1.style.color = mix(tone('--why-l1-dark'), COLORS.ink2, lit)
     s.words.forEach((w, k) => {
       const a = 0.06 + k * 0.036
       const u = E.out(seg(p, a, a + 0.11))
@@ -190,7 +184,7 @@ chapter({
       }
       // the light reaches the i first, then spreads
       const L = E.out(seg(p, IGN + c.d * 0.016, IGN + 0.06 + c.d * 0.016))
-      c.el.style.color = mix(DARK, INK, L)
+      c.el.style.color = mix(tone('--why-dark'), COLORS.ink, L)
     }
 
     // the word keeps a little of the light that found it (a static layer; only its opacity moves)
@@ -248,15 +242,15 @@ chapter({
     let halo = 3
     if (p < IGN) {
       r = lerp(6, 5.2, hold)
-      color = GREY
+      color = COLORS.grey
       glow = lerp(0.25, 0.12, hold)
     } else {
       const flare = E.swift(ign)
       const back = E.out(settle)
       r = lerp(lerp(5.2, Math.max(rT * 1.4, 9), flare), rT, back)
       r = lerp(r, 10, grow)
-      color = ign < 1 ? mix(mix(GREY, '#ffffff', clamp(ign * 2.2)), LIME, clamp((ign - 0.35) / 0.65)) : LIME
-      if (settle > 0) color = LIME
+      color = ign < 1 ? mix(mix(COLORS.grey, tone('--why-flash'), clamp(ign * 2.2)), COLORS.lime, clamp((ign - 0.35) / 0.65)) : COLORS.lime
+      if (settle > 0) color = COLORS.lime
       glow = lerp(lerp(0.12, 2.25, flare), 1.15, E.inOut(settle))
       glow = lerp(glow, 1, seg(p, 0.5, OUT + 0.1))
       halo = lerp(lerp(3, ctx.mobile ? 3.8 : 4.6, flare), 3, E.out(settle))

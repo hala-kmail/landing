@@ -15,7 +15,6 @@
 // (S7: r 10, lime).
 import { chapter, seg, clamp, lerp, E, COLORS, ring, go } from '../core.js'
 
-const LIME = COLORS.lime
 const KEYS = ['requested', 'promised', 'transit']
 const ANS = {
   requested: { n: 4630, rest: 'orders arrived after the date the customer asked for.', read: 'after the requested date' },
@@ -241,7 +240,7 @@ chapter({
       s.opts.forEach((o) => o.setAttribute('aria-checked', o.dataset.k === k ? 'true' : 'false'))
       if (s.clicked === k || (!s.clicked && choiceOf(p, s) === k && p >= P.auto[1])) {
         s.clicked = k
-        ring(LIME)
+        ring(COLORS.lime)
         return
       }
       const d = ctx.dot
@@ -355,7 +354,7 @@ chapter({
     const chosen = chosenOf(p, s)
 
     // one-shots, forward only
-    if (!s.clicked && s.last < P.auto[1] && p >= P.auto[1] && p < P.auto[1] + 0.05) ring(LIME)
+    if (!s.clicked && s.last < P.auto[1] && p >= P.auto[1] && p < P.auto[1] + 0.05) ring(COLORS.lime)
     s.last = p
 
     // ---- the card: opens out of the dot, closes back into it
@@ -691,7 +690,7 @@ chapter({
       }
     }
 
-    return { x: pos.x, y: pos.y, r, color: LIME, glow, halo, lean, lag, blink, sx, sy, stretch: 0.8 }
+    return { x: pos.x, y: pos.y, r, color: COLORS.lime, glow, halo, lean, lag, blink, sx, sy, stretch: 0.8 }
   },
 
   tick(time, p, ctx) {
@@ -700,7 +699,7 @@ chapter({
     const hopT = s.hop ? time - s.hop.t0 : 99
     if (s.hop && !s.hop.landed && hopT >= HOP) {
       s.hop.landed = true
-      if (p >= P.toPip[1]) ring(LIME)
+      if (p >= P.toPip[1]) ring(COLORS.lime)
     }
     const busy = hopT < HOP + 0.3 || (s.clickT != null && time - s.clickT < 1.4) || time - s.swapT < 0.8
     if (busy) this.apply(p, ctx)

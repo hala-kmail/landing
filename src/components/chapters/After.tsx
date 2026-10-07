@@ -5,6 +5,8 @@
  * and its styles src/styles/chapters/900-after.css: the class names and
  * data-* attributes here are what those look for, so change them together.
  */
+import OrapexLogo from '@/components/OrapexLogo'
+
 export default function After() {
   return (
     <div className="after after-root" id="after">
@@ -205,8 +207,7 @@ export default function After() {
           </nav>
         </div>
         <div className="after-foot-row after-foot-fine">
-          {/* eslint-disable-next-line @next/next/no-img-element -- an SVG logo: next/image has nothing to optimise */}
-          <p className="after-foot-by">An <img src="/assets/brand/orapex-logo-white.svg" alt="ORAPEX" width="135" height="24" /> Product · Your all-in-one Enterprise AI Assistant.</p>
+          <p className="after-foot-by">An <OrapexLogo /> Product · Your all-in-one Enterprise AI Assistant.</p>
           <p className="after-foot-copy">KSA · UAE · USA · © 2026 ORAPEX</p>
         </div>
       </footer>

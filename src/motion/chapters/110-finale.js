@@ -29,7 +29,6 @@
 import { chapter, seg, clamp, lerp, E, COLORS, ring, impulse, on, go } from '../core.js'
 import { WORDMARK as W, wordmarkSVG, tittleAt } from '../brand.js'
 
-const LIME = COLORS.lime
 
 const FOOT = { x: W.stem.x + W.stem.w / 2, y: W.stem.y + W.stem.h }
 const TOP = { x: FOOT.x, y: W.stem.y }
@@ -273,7 +272,7 @@ chapter({
         // it leans and pops toward the playground: that one
         s.hopAt = ctx.time
         impulse(clamp((s.goC.x - ctx.dot.x) * 2.4, -560, 560), -620)
-        ring(LIME)
+        ring(COLORS.lime)
         s.bumpT = ctx.time + 0.24
       }
     })
@@ -405,7 +404,7 @@ chapter({
     if (!s.k || p <= B.rise[0]) {
       // the seam: alone at the centre, drawing a breath before it starts
       const g = Math.sin(Math.PI * seg(p, 0.004, B.rise[0]))
-      return { x: C.x, y: C.y, r: 10 + 0.8 * g, color: LIME, glow: 1 + 0.25 * g, lean: 0, lag: 0 }
+      return { x: C.x, y: C.y, r: 10 + 0.8 * g, color: COLORS.lime, glow: 1 + 0.25 * g, lean: 0, lag: 0 }
     }
 
     const c = cam(s, p)
@@ -414,7 +413,7 @@ chapter({
     const penR = Math.max(ctx.mobile ? 4.5 : 3.4, W.stroke * kp * 0.6)
     const titR = W.dot.r * kp
     const V = (q) => view(s, q.x, q.y, m, c)
-    const pen = { color: LIME, r: penR, glow: 1.3, halo: 2.5, lean: 0, lag: 0, blink: false, stretch: 0.45 }
+    const pen = { color: COLORS.lime, r: penR, glow: 1.3, halo: 2.5, lean: 0, lag: 0, blink: false, stretch: 0.45 }
 
     // 1. it rises, arcs over and comes down on the foot of the P
     if (p < B.rise[1]) {
@@ -493,7 +492,7 @@ chapter({
       }
       const P = V(q)
       return {
-        color: LIME,
+        color: COLORS.lime,
         x: P.x,
         y: P.y,
         sx,
@@ -517,7 +516,7 @@ chapter({
     const bump = ctx.reduced ? 0 : ringOut(ctx.time - s.bumpT)
     const sink = Math.max(0, bump) * 0.09 * W.stem.h * kp // rides the stem down as it gives
     return {
-      color: LIME,
+      color: COLORS.lime,
       x: T.x,
       y: T.y + sink,
       r: titR,
@@ -542,7 +541,7 @@ chapter({
     if (s.lastP < LAND && p >= LAND && p - s.lastP < 0.15) {
       s.landT = time
       s.bumpT = time
-      ring(LIME)
+      ring(COLORS.lime)
     }
     s.lastP = p
     s.cta = lerp(s.cta, s.ctaWant, 1 - Math.exp(-dt / 0.14))
@@ -556,7 +555,7 @@ chapter({
       else if (d && T && time - s.flungAt > 0.1 && Math.hypot(d.x - T.x, d.y - T.y) < Math.max(5, d.r)) {
         s.flungAt = 0
         s.bumpT = time
-        ring(LIME)
+        ring(COLORS.lime)
       }
     }
     if (p >= LAND && s.k) s.home = view(s, TIT.x, TIT.y, E.inOut(seg(p, ...B.morph)), cam(s, p))

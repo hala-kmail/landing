@@ -1,6 +1,20 @@
 /* why (050) - the turn. Darkness, the dim dot, a held breath; "Prism" lands
    under it, the stem rises to meet it, and it ignites. */
 
+/* colours (read by 050-why.js): the light theme's (the default), then the dark film's */
+:root {
+  --why-dark: color-mix(in oklab, var(--ink) 30%, var(--bg));    /* "Prism" before the light reaches it */
+  --why-l1-dark: color-mix(in oklab, var(--ink) 51%, var(--bg));
+  --why-flash: var(--brand-kick);   /* the ignition's flash, before it settles on the dot's colour */
+  --why-spark: var(--ring);
+}
+:root[data-theme='dark'] {
+  --why-dark: #3f423b;
+  --why-l1-dark: #6f7269;
+  --why-flash: #ffffff;
+  --why-spark: #eaffb0;
+}
+
 .why-stage { --why-l1: clamp(26px, 3.5vw, 54px); --why-l2: clamp(84px, 9.25vw, 140px); }
 
 /* the lockup: centred by the grid, then nudged (from JS) so the tittle of the
@@ -29,7 +43,7 @@
   margin-left: -2.4em;
   font-size: var(--why-l2);
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(201, 241, 68, 0.2), rgba(201, 241, 68, 0.085) 45%, rgba(201, 241, 68, 0.025) 72%, transparent);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lime) 20%, transparent), color-mix(in srgb, var(--lime) 8.5%, transparent) 45%, color-mix(in srgb, var(--lime) 2.5%, transparent) 72%, transparent);
   opacity: 0;
   z-index: -1;
   pointer-events: none;
@@ -102,7 +116,7 @@ html:not(.js) .why-i::after {
   height: 76vh;
   margin-left: -70vw;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(201, 241, 68, 0.11), rgba(201, 241, 68, 0.035) 55%, transparent 100%);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lime) 11%, transparent), color-mix(in srgb, var(--lime) 3.5%, transparent) 55%, transparent 100%);
   opacity: 0;
   pointer-events: none;
   z-index: 0;

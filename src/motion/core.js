@@ -47,13 +47,49 @@ export const E = {
   back: ease('back.out(1.7)'),
 }
 
+/**
+ * The theme's colours, as #rrggbb. They follow <html data-theme> - the light theme by
+ * default, the dark film when the visitor chose it - and are read from base.css's tokens
+ * by readTheme(), so read them when you draw (COLORS.lime), never copy them at load.
+ */
 export const COLORS = {
-  lime: '#c9f144', // Prism, the truth. Nothing else is ever lime.
+  lime: '#c9f144', // Prism, the truth: lime in the dark film, the brand's colour in light. Nothing else wears it.
   ink: '#f2f4ee',
+  ink2: '#c9ccc2',
   grey: '#8a8d84', // the old way, a dimmed dot
   amber: '#f2b84e', // waiting (queue status) only
   rose: '#f2607e', // a guess, a wrong number - sparingly
   cold: '#a9c1ff',
+}
+const THEMED = { lime: '--lime', ink: '--ink', ink2: '--ink-2', grey: '--grey', amber: '--amber', rose: '--rose', cold: '--cold' }
+
+let probe = null
+let paint = null
+const tones = new Map()
+/**
+ * A colour token's value in the current theme, as #rrggbb, whatever it is written in
+ * (oklch, color-mix...): the browser resolves it on a probe, a 1px canvas turns it into sRGB.
+ */
+export function tone(name) {
+  let v = tones.get(name)
+  if (v) return v
+  if (!probe) {
+    probe = document.createElement('i')
+    probe.setAttribute('aria-hidden', 'true')
+    probe.style.display = 'none'
+    document.body.appendChild(probe)
+    paint = document.createElement('canvas').getContext('2d', { willReadFrequently: true })
+    paint.canvas.width = paint.canvas.height = 1
+  }
+  probe.style.color = `var(${name})`
+  paint.clearRect(0, 0, 1, 1)
+  paint.fillStyle = '#000'
+  paint.fillStyle = getComputedStyle(probe).color
+  paint.fillRect(0, 0, 1, 1)
+  const [r, g, b] = paint.getImageData(0, 0, 1, 1).data
+  v = `#${[r, g, b].map((x) => x.toString(16).padStart(2, '0')).join('')}`
+  tones.set(name, v)
+  return v
 }
 
 function parseColor(c) {
@@ -417,7 +453,8 @@ function updateDot(t, dt) {
 
 /* -------------------------------------------------------- ambient canvas */
 
-const fx = { cv: null, g: null, motes: [], w: 0, h: 0, lastY: 0, drift: 0 }
+// pool and dust strength, and the dust's colour, come from the theme (readTheme)
+const fx = { cv: null, g: null, motes: [], w: 0, h: 0, lastY: 0, drift: 0, pool: 1, dustA: 1, dust: [230, 232, 226] }
 
 function buildFx() {
   const cv = document.createElement('canvas')
@@ -455,7 +492,7 @@ function drawFx(t, y) {
 
   // a pool of light on the ground around the dot
   const R = Math.max(w, h) * 0.55
-  const a = clamp(0.085 * d.glow * d.alpha, 0, 0.16)
+  const a = clamp(0.085 * d.glow * d.alpha, 0, 0.16) * fx.pool
   if (a > 0.002) {
     const grd = g.createRadialGradient(d.x, d.y, 0, d.x, d.y, R)
     grd.addColorStop(0, `rgba(${col[0]},${col[1]},${col[2]},${a})`)
@@ -474,11 +511,12 @@ function drawFx(t, y) {
     const py = ((m.y * h - fx.drift * m.z * 0.35 - (reduced ? 0 : t * 6 * m.z)) % h + h) % h
     const near = Math.hypot(px - d.x, py - d.y)
     const lit = clamp(1 - near / (R * 0.8)) * d.glow * d.alpha
-    const alpha = (0.05 + 0.13 * m.a) * m.z + lit * 0.35
+    const alpha = ((0.05 + 0.13 * m.a) * m.z + lit * 0.35) * fx.dustA
     const rr = 0.5 + m.z * 1.1
+    const du = fx.dust
     g.fillStyle = lit > 0.05
-      ? `rgba(${Math.round(lerp(230, col[0], lit))},${Math.round(lerp(232, col[1], lit))},${Math.round(lerp(226, col[2], lit))},${alpha.toFixed(3)})`
-      : `rgba(230,232,226,${alpha.toFixed(3)})`
+      ? `rgba(${Math.round(lerp(du[0], col[0], lit))},${Math.round(lerp(du[1], col[1], lit))},${Math.round(lerp(du[2], col[2], lit))},${alpha.toFixed(3)})`
+      : `rgba(${du[0]},${du[1]},${du[2]},${alpha.toFixed(3)})`
     g.beginPath()
     g.arc(px, py, rr, 0, Math.PI * 2)
     g.fill()
@@ -719,6 +757,19 @@ function companion(want, over) {
   document.documentElement.classList.toggle('is-companion', u >= 0.98)
 }
 
+/* ----------------------------------------------------------------- theme */
+
+/** Take the theme's colours from the stylesheet: on start, and whenever data-theme changes. */
+function readTheme() {
+  tones.clear()
+  for (const k in THEMED) COLORS[k] = tone(THEMED[k])
+  DOT_DEFAULT.color = COLORS.lime
+  const cs = getComputedStyle(document.documentElement)
+  fx.pool = parseFloat(cs.getPropertyValue('--fx-pool')) || 1
+  fx.dustA = parseFloat(cs.getPropertyValue('--fx-dust')) || 1
+  fx.dust = parseColor(tone('--dust'))
+}
+
 /* ----------------------------------------------------------------- start */
 
 export async function start() {
@@ -733,6 +784,13 @@ export async function start() {
   buildFx()
   buildDot()
   buildRail()
+  readTheme()
+  // the theme switch (ThemeToggle.tsx) flips data-theme: every chapter re-measures and redraws in the new colours
+  new MutationObserver(() => {
+    readTheme()
+    measure()
+    emit('theme', document.documentElement.dataset.theme || 'light')
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
 
   addEventListener('pointermove', (e) => {
     pointer.x = e.clientX

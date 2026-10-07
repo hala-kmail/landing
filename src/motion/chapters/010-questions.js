@@ -15,14 +15,10 @@
 // words go, and the dot - carrying the question - returns to the centre (S2).
 // Reduced motion: nothing flies; the same beats cross-fade in place.
 import { gsap } from 'gsap'
-import { chapter, seg, clamp, lerp, E, COLORS, mix, rng, ring } from '../core.js'
+import { chapter, seg, clamp, lerp, E, COLORS, mix, rng, ring, tone } from '../core.js'
 
 const F = 1000 // focal length: something at depth F is drawn at scale 1
 const V = 9 * F // how far the camera travels through the field
-const { lime: LIME } = COLORS
-const DIM = '#4c4f47'
-const INK2 = '#c9ccc2'
-const INK = '#f2f4ee'
 
 // beats (chapter progress)
 const HOP = [0.008, 0.062] // the dot hops to where the sentence will end
@@ -262,8 +258,8 @@ const def = {
     const cy = ctx.vh / 2
 
     // one-shots, forward only: the dot lands in the full stop; it clicks into the question mark
-    if (s.last < HOP[1] && p >= HOP[1] && p < HOP[1] + 0.05) ring(LIME)
-    if (s.last < BIG[1] - 0.012 && p >= BIG[1] - 0.012 && p < BIG[1] + 0.04) ring(LIME)
+    if (s.last < HOP[1] && p >= HOP[1] && p < HOP[1] + 0.05) ring(COLORS.lime)
+    if (s.last < BIG[1] - 0.012 && p >= BIG[1] - 0.012 && p < BIG[1] + 0.04) ring(COLORS.lime)
     s.last = p
 
     // the camera
@@ -362,7 +358,7 @@ const def = {
       if (a > 0.08) boxes.push(L, Tp, Rr, B)
       q.el.style.visibility = 'visible'
       q.el.style.opacity = a.toFixed(3)
-      q.el.style.color = q.i === s.hot ? INK : mix(DIM, INK2, smooth(k, 0.22, 0.85))
+      q.el.style.color = q.i === s.hot ? COLORS.ink : mix(tone('--q-dim'), COLORS.ink2, smooth(k, 0.22, 0.85))
       q.el.style.transform =
         `translate3d(${sx.toFixed(2)}px, ${sy.toFixed(2)}px, 0) rotate(${(R ? 0 : q.roll * (1 - smooth(k, 0.2, 1.4)) + (roll * 180) / Math.PI).toFixed(2)}deg) scale(${kd.toFixed(4)}) translate(${(-q.ax).toFixed(1)}px, ${(-q.h / 2).toFixed(1)}px)`
       // a little motion blur as it rushes past - small, and only once it is already going
@@ -386,7 +382,7 @@ const def = {
     const bo = (R ? smooth(p, 0.67, 0.73) : smooth(p, BIG[0] + 0.005, BIG[0] + 0.06)) * (1 - out)
     s.big.style.opacity = bo.toFixed(3)
     s.big.style.visibility = bo > 0.002 ? '' : 'hidden'
-    s.big.style.color = mix(DIM, INK, smooth(kb, 0.18, 0.75))
+    s.big.style.color = mix(tone('--q-dim'), COLORS.ink, smooth(kb, 0.18, 0.75))
     s.big.style.transform =
       `translate3d(${btx.toFixed(2)}px, ${(bty - out * 26).toFixed(2)}px, 0) scale(${kb.toFixed(4)})`
     s.big.style.filter = out > 0.01 ? `blur(${(out * 6).toFixed(2)}px)` : ''
@@ -531,7 +527,7 @@ const def = {
       x,
       y,
       r,
-      color: LIME,
+      color: COLORS.lime,
       glow,
       sx,
       sy,

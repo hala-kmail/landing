@@ -4,6 +4,51 @@
    the stack: figure + tower).
    ========================================================================== */
 
+/* colours: the light theme's (the default), then the dark film's */
+:root {
+  --num-rose-ui: var(--rose);
+  --num-report: var(--card);
+  --num-report-2: var(--panel);
+  --num-block: var(--card);
+  --num-block-2: var(--panel);
+  --num-bar: color-mix(in oklab, var(--ink) 43%, var(--bg));
+  --num-bar-2: color-mix(in oklab, var(--ink) 28%, var(--bg));
+  --num-strong: color-mix(in oklab, var(--ink) 91%, var(--bg));
+  --num-rtitle: color-mix(in oklab, var(--ink) 93%, var(--bg));
+  --num-total: color-mix(in oklab, var(--ink) 90%, var(--bg));
+  --num-text: color-mix(in oklab, var(--ink) 73%, var(--bg));
+  --num-foot: color-mix(in oklab, var(--ink) 63%, var(--bg));
+  --num-meta: color-mix(in oklab, var(--ink) 57%, var(--bg));
+  --num-em: color-mix(in oklab, var(--ink) 51%, var(--bg));
+  --num-th: color-mix(in oklab, var(--ink) 50%, var(--bg));
+  --num-line-mid: color-mix(in oklab, var(--ink) 80%, var(--bg));
+  /* read by the motion (030-number.kit.js, 030-number.js) */
+  --num-believed: color-mix(in oklab, var(--ink) 89%, var(--bg));   /* the number everybody believed */
+  --num-true-ink: color-mix(in oklab, var(--ink) 97%, var(--bg));
+  --num-fig-start: color-mix(in oklab, var(--ink) 88%, var(--bg));
+}
+:root[data-theme='dark'] {
+  --num-rose-ui: #e7738b;
+  --num-report: #171815;
+  --num-report-2: #121310;
+  --num-block: #1c1d1a;
+  --num-block-2: #131411;
+  --num-bar: #5d6059;
+  --num-bar-2: #3a3c37;
+  --num-strong: #d9dbd4;
+  --num-rtitle: #dfe1da;
+  --num-total: #d6d8d1;
+  --num-text: #a7aaa2;
+  --num-foot: #8d9088;
+  --num-meta: #7d8078;
+  --num-em: #6f726a;
+  --num-th: #6c6f67;
+  --num-line-mid: #b9bcb2;
+  --num-believed: #d4d7cd;
+  --num-true-ink: #e9ebe4;
+  --num-fig-start: #cfd2c8;
+}
+
 /* kit: masked words */
 .number-kw {
   display: inline-block;
@@ -17,7 +62,7 @@
 .number-stage,
 .truth-stage {
   --F: min(21vw, 36vh, 300px);
-  --rose-ui: #e7738b;
+  --rose-ui: var(--num-rose-ui);
 }
 
 /* ---------------------------------------------------------------- copy */
@@ -29,7 +74,7 @@ html:not(.js) .number-h2 { margin-top: 24px; }
 /* without JS the report shows its own figure (with JS the big figure sits in the slot) */
 html:not(.js) .number-kslot .sr-only {
   position: static !important; width: auto; height: auto; margin: 0; clip: auto; overflow: visible; white-space: nowrap;
-  font: 700 48px/1 var(--sans); letter-spacing: -0.035em; color: #d9dbd4;
+  font: 700 48px/1 var(--sans); letter-spacing: -0.035em; color: var(--num-strong);
 }
 
 /* ------------------------------------------------------------ the report */
@@ -42,11 +87,11 @@ html:not(.js) .number-kslot .sr-only {
   margin: 10px 0 0 calc(var(--gut) + 8px);
   padding: 20px 22px 18px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: linear-gradient(180deg, #171815, #121310 60%);
+  border: 1px solid color-mix(in srgb, var(--hi) 9%, transparent);
+  background: linear-gradient(180deg, var(--num-report), var(--num-report-2) 60%);
   box-shadow: var(--shadow);
   font-family: var(--ui);
-  color: #a7aaa2;
+  color: var(--num-text);
 }
 .js .number-report {
   position: absolute;
@@ -65,8 +110,8 @@ html:not(.js) .number-kslot .sr-only {
   border-bottom: 1px solid var(--line);
 }
 .number-rhead p { margin: 0; }
-.number-rtitle { font: 600 17px/1.2 var(--ui); color: #dfe1da; letter-spacing: -0.01em; }
-.number-rmeta { margin-top: 5px !important; font: 400 12px/1.3 var(--ui); color: #7d8078; }
+.number-rtitle { font: 600 17px/1.2 var(--ui); color: var(--num-rtitle); letter-spacing: -0.01em; }
+.number-rmeta { margin-top: 5px !important; font: 400 12px/1.3 var(--ui); color: var(--num-meta); }
 .number-rpage {
   flex: none;
   font: 500 9.5px/1 var(--mono);
@@ -89,14 +134,14 @@ html:not(.js) .number-kslot .sr-only {
   min-height: 104px;
   padding: 14px 16px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid color-mix(in srgb, var(--hi) 7%, transparent);
+  background: color-mix(in srgb, var(--shade) 25%, transparent);
 }
 .number-klabel {
   font: 500 9.5px/1 var(--mono);
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #7d8078;
+  color: var(--num-meta);
 }
 .number-kslot { display: block; height: 48px; }
 .number-bars {
@@ -107,9 +152,9 @@ html:not(.js) .number-kslot .sr-only {
 }
 .number-bars i {
   flex: 1;
-  height: calc(var(--h) * 100%);
+  height: calc(var(--bar-h) * 100%);
   border-radius: 3px 3px 0 0;
-  background: linear-gradient(180deg, #5d6059, #3a3c37);
+  background: linear-gradient(180deg, var(--num-bar), var(--num-bar-2));
 }
 .number-table {
   width: 100%;
@@ -122,23 +167,23 @@ html:not(.js) .number-kslot .sr-only {
   font: 500 9.5px/1 var(--mono);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #6c6f67;
+  color: var(--num-th);
   border-bottom: 1px solid var(--line);
 }
-.number-table td { padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.04); color: #a7aaa2; }
+.number-table td { padding: 8px 0; border-bottom: 1px solid color-mix(in srgb, var(--hi) 4%, transparent); color: var(--num-text); }
 .number-table th:not(:first-child), .number-table td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
-.number-table tfoot td { border-bottom: 0; color: #d6d8d1; font-weight: 600; padding-top: 10px; }
+.number-table tfoot td { border-bottom: 0; color: var(--num-total); font-weight: 600; padding-top: 10px; }
 .number-foot {
   display: flex;
   justify-content: space-between;
   gap: 12px;
   margin: 12px 0 0;
   padding-top: 12px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  border-top: 1px dashed color-mix(in srgb, var(--hi) 10%, transparent);
   font: 400 10.5px/1.3 var(--mono);
-  color: #6c6f67;
+  color: var(--num-th);
 }
-.number-foot span:first-child { color: #8d9088; }
+.number-foot span:first-child { color: var(--num-foot); }
 
 /* ------------------------------------------------- the stack (kit, shared) */
 
@@ -152,17 +197,17 @@ html:not(.js) .number-kslot .sr-only {
   height: 52px;
   padding: 0 16px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: linear-gradient(180deg, #1c1d1a, #131411);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 40px -18px rgba(0, 0, 0, 0.9);
+  border: 1px solid color-mix(in srgb, var(--hi) 10%, transparent);
+  background: linear-gradient(180deg, var(--num-block), var(--num-block-2));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--sheen) 5%, transparent), 0 18px 40px -18px color-mix(in srgb, var(--shade) 90%, transparent);
   font: 500 12.5px/1 var(--mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #c9ccc2;
+  color: var(--ink-2);
   white-space: nowrap;
 }
-.number-block em { font-style: normal; color: #6f726a; letter-spacing: 0.08em; }
-.number-block:nth-child(3) em { color: #a7aaa2; }
+.number-block em { font-style: normal; color: var(--num-em); letter-spacing: 0.08em; }
+.number-block:nth-child(3) em { color: var(--num-text); }
 .number-fig {
   margin: 0;
   font: 700 var(--F)/1 var(--sans);
@@ -211,10 +256,10 @@ html:not(.js) .number-kslot .sr-only {
 .number-chart { display: none; }
 .js .number-chart { display: block; position: absolute; inset: 0; pointer-events: none; }
 .number-svg { position: absolute; inset: 0; overflow: visible; }
-.number-axis { stroke: rgba(255, 255, 255, 0.1); stroke-width: 1; }
+.number-axis { stroke: color-mix(in srgb, var(--hi) 10%, transparent); stroke-width: 1; }
 .number-plan {
   fill: none;
-  stroke: rgba(201, 204, 194, 0.32);
+  stroke: color-mix(in srgb, var(--ink-2) 32%, transparent);
   stroke-width: 1.25;
   stroke-dasharray: 0.006 0.01;
 }
@@ -238,7 +283,7 @@ html:not(.js) .number-kslot .sr-only {
   white-space: nowrap;
 }
 .number-month { transform: translateX(-50%); }
-.number-tag-plan { color: #7d8078; }
+.number-tag-plan { color: var(--num-meta); }
 .number-tag-rev { color: var(--mfg); }
 .number-tag-rev b { margin-left: 8px; color: var(--rose); font-weight: 500; font-size: 1.5em; letter-spacing: 0.02em; }
 

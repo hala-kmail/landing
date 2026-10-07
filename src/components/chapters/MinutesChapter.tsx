@@ -216,12 +216,12 @@ export default function MinutesChapter() {
             <svg className="minutes-ysvg">
               <defs>
                 <linearGradient id="minutes-area-fill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#c9f144" stopOpacity="0.2" />
-                  <stop offset="1" stopColor="#c9f144" stopOpacity="0" />
+                  <stop offset="0" style={{ stopColor: 'var(--lime)' }} stopOpacity="0.2" />
+                  <stop offset="1" style={{ stopColor: 'var(--lime)' }} stopOpacity="0" />
                 </linearGradient>
                 <linearGradient id="minutes-ghost-grad" className="minutes-ghost-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0" stopColor="#8a8d84" />
-                  <stop offset="1" stopColor="#f2607e" />
+                  <stop offset="0" style={{ stopColor: 'var(--grey)' }} />
+                  <stop offset="1" style={{ stopColor: 'var(--rose)' }} />
                 </linearGradient>
                 <clipPath id="minutes-clip">
                   <rect className="minutes-cliprect" x="-20" y="-200" width="0" height="4000" />

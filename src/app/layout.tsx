@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { preload } from 'react-dom'
+import { BAR, THEME_KEY } from '@/components/theme'
 
 // order matters: base first, then the chapters in story order (the same cascade as before)
 import 'lenis/dist/lenis.css'
@@ -33,8 +34,11 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#050505',
+  // the light theme's --background, oklch(.984 .005 262), in hex; ThemeToggle.tsx keeps it in step with the theme
+  themeColor: BAR.light,
 }
+
+const HEAD_SCRIPT = `(function(){var d=document.documentElement;d.classList.add('js');try{if(localStorage.getItem('${THEME_KEY}')==='dark')d.dataset.theme='dark'}catch(e){}})()`
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   // the hero's two weights, early. Production only: in development the stylesheets
@@ -44,11 +48,12 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
     preload('/assets/fonts/tajawal-latin-400.woff2', { as: 'font', type: 'font/woff2', crossOrigin: '' })
   }
   return (
-    // the story's stylesheets lay stages out as fixed layers only under html.js, so the
-    // class goes on before the first paint; without scripts the page reads top to bottom
+    // before the first paint: the story's stylesheets lay stages out as fixed layers only
+    // under html.js (without scripts the page reads top to bottom), and a visitor who chose
+    // the dark theme gets it at once - light is the default, whatever the system prefers
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        <script dangerouslySetInnerHTML={{ __html: HEAD_SCRIPT }} />
       </head>
       <body>{children}</body>
     </html>

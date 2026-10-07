@@ -8,10 +8,9 @@
  * nine the ticket reaches the front and resolves: the light goes neutral grey.
  * The last frame (the resolved row alone) is the first frame of 030-number.
  */
-import { chapter, seg, win, clamp, lerp, E, COLORS, mix, ring, impulse } from '../core.js'
-import { splitWords, playWords, css, bump, BELIEVED } from './030-number.kit.js'
+import { chapter, seg, win, clamp, lerp, E, COLORS, mix, ring, impulse, tone } from '../core.js'
+import { splitWords, playWords, css, bump, KIT } from './030-number.kit.js'
 
-const AMBER = COLORS.amber
 
 /* nine days: day k (1..9) begins at D(k) */
 const D0 = 0.448
@@ -98,7 +97,7 @@ chapter({
     s.nudge.addEventListener('click', () => {
       s.asks += 1
       impulse((s.asks % 2 ? -1 : 1) * 60, -320)
-      ring(AMBER)
+      ring(COLORS.amber)
       s.reply.textContent = REPLIES[(s.asks - 1) % REPLIES.length]
       s.nudgeN.textContent = s.asks > 1 ? `×${s.asks}` : ''
       s.reply.classList.remove('is-on')
@@ -164,9 +163,9 @@ chapter({
     const lp = s.lastP
     if (lp >= 0 && p > lp && p - lp < 0.05) {
       const crossed = (x) => lp < x && p >= x
-      if (crossed(0.162)) ring(AMBER)
+      if (crossed(0.162)) ring(COLORS.amber)
       for (const k of HOPS) if (crossed(D(k))) impulse(0, k === 8 ? -230 : -170)
-      if (crossed(P_DONE)) ring(BELIEVED)
+      if (crossed(P_DONE)) ring(KIT.believed)
     }
     s.lastP = p
 
@@ -177,7 +176,7 @@ chapter({
       // the newest phrase is the bright one
       const next = PH[i + 1]
       const dimT = next ? E.inOut(seg(p, next[0], next[0] + 0.04)) : 0
-      css(s.ph[i], 'color', dimT > 0 ? mix('#f2f4ee', '#7d8078', dimT * 0.85) : '')
+      css(s.ph[i], 'color', dimT > 0 ? mix(COLORS.ink, tone('--wait-fade'), dimT * 0.85) : '')
     }
 
     /* the ticket card */
@@ -275,7 +274,7 @@ chapter({
     const g = this.geo(p, ctx)
 
     // S2: centre, lime; the borrowed dot turns amber at once
-    let color = mix(COLORS.lime, AMBER, E.out(seg(p, 0.0, 0.07)))
+    let color = mix(COLORS.lime, COLORS.amber, E.out(seg(p, 0.0, 0.07)))
     if (p < 0.035) {
       return { x: cx, y: cy, r: 10, color, glow: lerp(1, 0.85, seg(p, 0, 0.035)), lean: 0, lag: 0.05 }
     }
@@ -319,7 +318,7 @@ chapter({
       const busy = 0.66 + 0.2 * Math.sin(u * Math.PI * 5) * (1 - u * 0.4)
       glow = lerp(0.42, busy, 1 - seg(p, P_DONE, P_DONE + 0.02))
     }
-    color = mix(AMBER, BELIEVED, E.inOut(seg(p, P_DONE - 0.004, P_DONE + 0.028)))
+    color = mix(COLORS.amber, KIT.believed, E.inOut(seg(p, P_DONE - 0.004, P_DONE + 0.028)))
     return {
       x: sock.x, y, r, color, glow, halo: 2.8, lean: 0, lag: 0, blink: false, stretch: 0.3,
       sx: 1 + 0.42 * land + 0.18 * hop, sy: 1 - 0.36 * land - 0.3 * hop,

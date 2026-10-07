@@ -2,6 +2,11 @@
    A role switch whose knob is the dot; a customer table whose sensitive cells
    are masked per role; an audit trail that records who asked what. */
 
+/* colours: the light theme's (the default), then the dark film's - the switch's recessed well,
+   kept whole so the dark one stays the original gradient */
+:root { --hands-well: linear-gradient(180deg, color-mix(in srgb, var(--shade) 35%, transparent), color-mix(in srgb, var(--hi) 2%, transparent)), color-mix(in srgb, var(--hi) 2%, transparent); }
+:root[data-theme='dark'] { --hands-well: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(255, 255, 255, 0.02)), rgba(255, 255, 255, 0.02); }
+
 .hands-stage {
   --k: 1; /* set from JS: the composition's scale for this viewport */
   perspective: 1600px;
@@ -59,15 +64,15 @@
   height: calc(36px * var(--k));
   border-radius: 999px;
   border: 1px solid var(--line-2);
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(255, 255, 255, 0.02)), rgba(255, 255, 255, 0.02);
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.04);
+  background: var(--hands-well);
+  box-shadow: inset 0 2px 6px color-mix(in srgb, var(--shade) 55%, transparent), 0 1px 0 color-mix(in srgb, var(--sheen) 4%, transparent);
 }
 .hands-fill {
   position: absolute;
   inset: 3px;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(201, 241, 68, 0.02), rgba(201, 241, 68, 0.2));
-  box-shadow: inset 0 0 0 1px rgba(201, 241, 68, 0.18);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--lime) 2%, transparent), color-mix(in srgb, var(--lime) 20%, transparent));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lime) 18%, transparent);
   clip-path: inset(0 100% 0 0 round 999px);
 }
 .hands-stop {
@@ -143,12 +148,12 @@
   align-items: center;
   height: calc(47px * var(--k));
   padding: 0 calc(22px * var(--k));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid color-mix(in srgb, var(--hi) 5%, transparent);
 }
 .hands-tr:last-child { border-bottom: 0; }
 .hands-thead {
   height: calc(40px * var(--k));
-  background: rgba(255, 255, 255, 0.018);
+  background: color-mix(in srgb, var(--hi) 1.8%, transparent);
   font: 500 max(10px, calc(10.5px * var(--k))) / 1 var(--mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -174,15 +179,15 @@
   border-radius: 6px;
   padding: 3px 6px;
   margin: 0 -6px;
-  background: rgba(201, 241, 68, calc(var(--hl, 0) * 0.13));
-  box-shadow: inset 0 0 0 1px rgba(201, 241, 68, calc(var(--hl, 0) * 0.25));
+  background: color-mix(in srgb, var(--lime) calc(var(--hl, 0) * 13%), transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lime) calc(var(--hl, 0) * 25%), transparent);
 }
 .hands-v.is-masked {
   font: 400 calc(12.5px * var(--k)) / 1.4 var(--mono);
   color: var(--mfg);
   letter-spacing: 0.02em;
   /* a slow sheen passes over what you are not cleared to see */
-  background-image: linear-gradient(100deg, transparent 35%, rgba(242, 244, 238, 0.07) 50%, transparent 65%);
+  background-image: linear-gradient(100deg, transparent 35%, color-mix(in srgb, var(--ink) 7%, transparent) 50%, transparent 65%);
   background-size: 300% 100%;
   background-position: 120% 0;
   animation: hands-sheen 4.2s cubic-bezier(0.45, 0, 0.25, 1) infinite;
@@ -227,7 +232,7 @@
   width: 84%;
   margin: calc(-20px * var(--k)) calc(-28px * var(--k)) 0 auto;
   padding: calc(14px * var(--k)) calc(20px * var(--k)) calc(8px * var(--k));
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 50%), var(--card-2);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--sheen) 5%, transparent), color-mix(in srgb, var(--sheen) 0%, transparent) 50%), var(--card-2);
 }
 .hands-audit-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: calc(6px * var(--k)); }
 .hands-audit-head .label { font-size: calc(11px * var(--k)); }
@@ -237,7 +242,7 @@
   height: 6px;
   border-radius: 50%;
   background: var(--ink-2);
-  box-shadow: 0 0 0 3px rgba(242, 244, 238, 0.08);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ink) 8%, transparent);
 }
 .hands-logbox {
   position: relative;
@@ -254,7 +259,7 @@
   column-gap: calc(14px * var(--k));
   align-items: center;
   height: var(--row);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid color-mix(in srgb, var(--hi) 5%, transparent);
   font-size: calc(13.5px * var(--k));
   color: var(--ink-2);
   position: relative;
@@ -264,7 +269,7 @@
 .hands-entry b { font-weight: 500; color: var(--ink-2); white-space: nowrap; }
 .hands-q { color: var(--mfg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hands-entry em { font-style: normal; font-size: calc(11.5px * var(--k)); color: var(--mfg); white-space: nowrap; }
-.hands-entry { background: linear-gradient(90deg, rgba(242, 244, 238, calc(var(--now, 0) * 0.06)), transparent 80%); }
+.hands-entry { background: linear-gradient(90deg, color-mix(in srgb, var(--ink) calc(var(--now, 0) * 6%), transparent), transparent 80%); }
 .hands-old { opacity: 0.55; }
 .hands-entry.is-now b { color: var(--ink); }
 .hands-entry.is-now em { color: var(--ink-2); }

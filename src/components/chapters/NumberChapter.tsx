@@ -71,10 +71,10 @@ export default function NumberChapter() {
                     <span className="number-klabel">By region</span>
                     {' '}
                     <span className="number-bars">
-                      <i style={{ '--h': '1' }} />
-                      <i style={{ '--h': '0.82' }} />
-                      <i style={{ '--h': '0.7' }} />
-                      <i style={{ '--h': '0.52' }} />
+                      <i style={{ '--bar-h': '1' }} />
+                      <i style={{ '--bar-h': '0.82' }} />
+                      <i style={{ '--bar-h': '0.7' }} />
+                      <i style={{ '--bar-h': '0.52' }} />
                     </span>
                   </div>
                 </div>
@@ -158,13 +158,13 @@ export default function NumberChapter() {
           <svg className="number-svg" width="100%" height="100%">
             <defs>
               <linearGradient id="number-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" stopColor="#c9ccc2" />
-                <stop offset="0.42" stopColor="#b9bcb2" />
-                <stop offset="1" stopColor="#f2607e" />
+                <stop offset="0" style={{ stopColor: 'var(--ink-2)' }} />
+                <stop offset="0.42" style={{ stopColor: 'var(--num-line-mid)' }} />
+                <stop offset="1" style={{ stopColor: 'var(--rose)' }} />
               </linearGradient>
               <linearGradient id="number-fill" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#f2607e" stopOpacity="0.16" />
-                <stop offset="1" stopColor="#f2607e" stopOpacity="0" />
+                <stop offset="0" style={{ stopColor: 'var(--rose)' }} stopOpacity="0.16" />
+                <stop offset="1" style={{ stopColor: 'var(--rose)' }} stopOpacity="0" />
               </linearGradient>
               <clipPath id="number-clip">
                 <rect className="number-cliprect" x="0" y="0" width="0" height="0" />

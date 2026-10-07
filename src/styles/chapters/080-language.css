@@ -2,7 +2,17 @@
    The dot draws each link from a business word to its column, flips a Prism thread from
    English to Arabic as the knob of its switch, then visits every database where the data lives. */
 
-.lang-stage { --lang-link: rgba(201, 241, 68, 0.9); }
+/* colours: the light theme's (the default), then the dark film's */
+:root {
+  --lang-chip: var(--card);
+  --lang-flow: var(--lime);
+}
+:root[data-theme='dark'] {
+  --lang-chip: #0b0c09;
+  --lang-flow: #e6ffa0;
+}
+
+.lang-stage { --lang-link: color-mix(in srgb, var(--lime) 90%, transparent); }
 .lang-stage code, .lang-db-uri, .lang-def { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0; }
 
 /* -------------------------------------------------------------- type */
@@ -27,8 +37,8 @@
   height: clamp(42px, 6vh, 54px);
   border-radius: 999px;
   border: 1px solid var(--line-2);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)), #0b0c09;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 12px 30px -14px rgba(0, 0, 0, 0.9);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--sheen) 5%, transparent), color-mix(in srgb, var(--sheen) 1.5%, transparent)), var(--lang-chip);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--sheen) 5%, transparent), 0 12px 30px -14px color-mix(in srgb, var(--shade) 90%, transparent);
   white-space: nowrap;
   transition: border-color 0.35s, background 0.35s, color 0.35s, box-shadow 0.35s;
 }
@@ -55,19 +65,19 @@
   height: 9px;
   margin-top: -4.5px;
   border-radius: 50%;
-  border: 1.5px solid rgba(242, 244, 238, 0.4);
-  background: #0b0c09;
+  border: 1.5px solid color-mix(in srgb, var(--ink) 40%, transparent);
+  background: var(--lang-chip);
   transition: background 0.35s, border-color 0.35s;
 }
 .lang-term .lang-pip { right: -5px; }
 .lang-colm .lang-pip { left: -5px; }
-.lang-term.is-linked { border-color: rgba(201, 241, 68, 0.38); }
+.lang-term.is-linked { border-color: color-mix(in srgb, var(--lime) 38%, transparent); }
 .lang-term.is-linked .lang-pip,
 .lang-colm.is-linked .lang-pip { background: var(--ink); border-color: var(--ink); }
-.lang-colm.is-linked { color: var(--ink); border-color: rgba(242, 244, 238, 0.26); }
-.lang-colm.is-hit { border-color: rgba(201, 241, 68, 0.7); box-shadow: 0 0 0 4px rgba(201, 241, 68, 0.08), 0 0 36px -6px rgba(201, 241, 68, 0.45); }
-.lang-term.is-hot, .lang-term:focus-visible { border-color: var(--lime); background: linear-gradient(180deg, rgba(201, 241, 68, 0.12), rgba(201, 241, 68, 0.03)), #0b0c09; }
-.lang-colm.is-hot { border-color: rgba(201, 241, 68, 0.6); color: var(--ink); }
+.lang-colm.is-linked { color: var(--ink); border-color: color-mix(in srgb, var(--ink) 26%, transparent); }
+.lang-colm.is-hit { border-color: color-mix(in srgb, var(--lime) 70%, transparent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--lime) 8%, transparent), 0 0 36px -6px color-mix(in srgb, var(--lime) 45%, transparent); }
+.lang-term.is-hot, .lang-term:focus-visible { border-color: var(--lime); background: linear-gradient(180deg, color-mix(in srgb, var(--lime) 12%, transparent), color-mix(in srgb, var(--lime) 3%, transparent)), var(--lang-chip); }
+.lang-colm.is-hot { border-color: color-mix(in srgb, var(--lime) 60%, transparent); color: var(--ink); }
 .lang-term.is-dim, .lang-colm.is-dim { opacity: 0.32; }
 .lang-def {
   margin: 0;
@@ -82,9 +92,9 @@
   padding: 4px 8px 3px;
   border-radius: 6px;
   background: var(--bg);
-  box-shadow: 0 0 0 1px rgba(201, 241, 68, 0.18);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--lime) 18%, transparent);
 }
-.js .lang-def:not([data-i='0']) { box-shadow: 0 0 0 1px rgba(242, 244, 238, 0.12); }
+.js .lang-def:not([data-i='0']) { box-shadow: 0 0 0 1px color-mix(in srgb, var(--ink) 12%, transparent); }
 
 /* ------------------------------------------- the switch to Arabic: a thread */
 
@@ -117,7 +127,7 @@
   height: 28px;
   border-radius: 999px;
   border: 1px solid var(--line-2);
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--hi) 4%, transparent);
   transition: background 0.35s, border-color 0.35s;
 }
 .lang-sw-knob {
@@ -132,8 +142,8 @@
 }
 .lang-card:not(.is-ar) .lang-sw-en { color: var(--ink); }
 .lang-card.is-ar .lang-sw-ar { color: var(--ink); }
-.lang-card.is-ar .lang-sw-track { background: rgba(201, 241, 68, 0.12); border-color: rgba(201, 241, 68, 0.45); }
-.lang-card.is-ar .lang-sw-knob { left: auto; right: 4px; background: var(--lime); box-shadow: 0 0 10px rgba(201, 241, 68, 0.6); }
+.lang-card.is-ar .lang-sw-track { background: color-mix(in srgb, var(--lime) 12%, transparent); border-color: color-mix(in srgb, var(--lime) 45%, transparent); }
+.lang-card.is-ar .lang-sw-knob { left: auto; right: 4px; background: var(--lime); box-shadow: 0 0 10px color-mix(in srgb, var(--lime) 60%, transparent); }
 
 /* English, and the same thread in Arabic, right to left; with JS they share one cell and the sweep turns one into the other */
 .lang-faces { display: grid; gap: 18px; }
@@ -162,7 +172,7 @@ html:not(.js) .lang-face-ar { padding-top: 18px; border-top: 1px solid var(--lin
   padding: 11px 16px;
   border-radius: 16px 16px 4px 16px;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--hi) 6%, transparent);
   font: 400 17px/1.4 var(--sans);
   color: var(--ink);
 }
@@ -170,7 +180,7 @@ html:not(.js) .lang-face-ar { padding-top: 18px; border-top: 1px solid var(--lin
 .lang-think { display: flex; align-items: baseline; gap: 10px; margin: 0; font: 400 14px/1.45 var(--sans); color: var(--mfg); }
 .lang-agents { flex: none; font: 500 11px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
 .lang-face-ar .lang-agents { font: 700 13px/1 var(--sans); letter-spacing: 0; }
-.lang-think code { padding: 1px 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.05); font: 400 13px/1.4 var(--mono); color: var(--ink-2); }
+.lang-think code { padding: 1px 6px; border-radius: 6px; background: color-mix(in srgb, var(--hi) 5%, transparent); font: 400 13px/1.4 var(--mono); color: var(--ink-2); }
 .lang-ans {
   display: flex;
   align-items: flex-start;
@@ -178,14 +188,14 @@ html:not(.js) .lang-face-ar { padding-top: 18px; border-top: 1px solid var(--lin
   margin: 0;
   padding: 14px 16px;
   border-radius: 12px;
-  border: 1px solid rgba(201, 241, 68, 0.22);
-  background: rgba(201, 241, 68, 0.05);
+  border: 1px solid color-mix(in srgb, var(--lime) 22%, transparent);
+  background: color-mix(in srgb, var(--lime) 5%, transparent);
   font: 400 17px/1.45 var(--sans);
   color: var(--ink);
 }
 .lang-ans b { font-weight: 700; color: var(--lime); }
 /* the answer's verified light: in Arabic, the dot itself lands in it */
-.lang-check { flex: none; width: 18px; height: 18px; margin-top: 3px; border-radius: 50%; border: 1.5px solid rgba(201, 241, 68, 0.55); }
+.lang-check { flex: none; width: 18px; height: 18px; margin-top: 3px; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--lime) 55%, transparent); }
 .lang-face-en .lang-check,
 html:not(.js) .lang-check,
 .lang-card.is-lit .lang-check { background: radial-gradient(circle, var(--lime) 0 4px, transparent 4.5px); }
@@ -197,7 +207,7 @@ html:not(.js) .lang-check,
   left: 0;
   width: 2px;
   background: linear-gradient(180deg, transparent, var(--lime) 18%, var(--lime) 82%, transparent);
-  box-shadow: 0 0 18px rgba(201, 241, 68, 0.55);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--lime) 55%, transparent);
   opacity: 0;
   pointer-events: none;
 }
@@ -216,8 +226,8 @@ html:not(.js) .lang-check,
   padding: 0 16px;
   border-radius: 14px;
   border: 1px solid var(--line-2);
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01) 60%), #0b0c09;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 40px -18px rgba(0, 0, 0, 0.95);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--sheen) 5%, transparent), color-mix(in srgb, var(--sheen) 1%, transparent) 60%), var(--lang-chip);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--sheen) 5%, transparent), 0 18px 40px -18px color-mix(in srgb, var(--shade) 95%, transparent);
   transition: border-color 0.4s, box-shadow 0.4s, background 0.4s;
 }
 .lang-glyph {
@@ -226,7 +236,7 @@ html:not(.js) .lang-check,
   height: 30px;
   padding: 4px;
   border-radius: 9px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid color-mix(in srgb, var(--hi) 10%, transparent);
   fill: none;
   stroke: var(--mfg);
   stroke-width: 1.5;
@@ -237,11 +247,11 @@ html:not(.js) .lang-check,
 .lang-db-t { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .lang-db-name { font: 700 17px/1 var(--sans); letter-spacing: -0.01em; color: var(--ink-2); padding-top: 2px; transition: color 0.4s; }
 .lang-db-uri { font: 400 11px/1 var(--mono); color: var(--dim); transition: color 0.4s; }
-.lang-db.is-on { border-color: rgba(201, 241, 68, 0.42); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 0 0 1px rgba(201, 241, 68, 0.08), 0 20px 50px -18px rgba(201, 241, 68, 0.25); }
-.lang-db.is-on .lang-glyph { stroke: var(--ink); border-color: rgba(201, 241, 68, 0.35); }
+.lang-db.is-on { border-color: color-mix(in srgb, var(--lime) 42%, transparent); box-shadow: inset 0 1px 0 color-mix(in srgb, var(--sheen) 6%, transparent), 0 0 0 1px color-mix(in srgb, var(--lime) 8%, transparent), 0 20px 50px -18px color-mix(in srgb, var(--lime) 25%, transparent); }
+.lang-db.is-on .lang-glyph { stroke: var(--ink); border-color: color-mix(in srgb, var(--lime) 35%, transparent); }
 .lang-db.is-on .lang-db-name { color: var(--ink); }
 .lang-db.is-on .lang-db-uri { color: var(--mfg); }
-.lang-db:hover { border-color: rgba(201, 241, 68, 0.6); }
+.lang-db:hover { border-color: color-mix(in srgb, var(--lime) 60%, transparent); }
 
 .lang-hub { display: none; }
 .lang-svg { display: none; }
@@ -259,13 +269,13 @@ html:not(.js) .lang-check,
   pointer-events: none;
 }
 .lang-svg path, .lang-svg line { fill: none; stroke-linecap: round; }
-.lang-svg .lang-ghost { stroke: rgba(242, 244, 238, 0.1); stroke-width: 1.2; stroke-dasharray: 2 6; }
+.lang-svg .lang-ghost { stroke: color-mix(in srgb, var(--ink) 10%, transparent); stroke-width: 1.2; stroke-dasharray: 2 6; }
 .lang-svg .lang-link { stroke: var(--lang-link); stroke-width: 1.8; }
 .lang-svg .lang-link-g { stroke: var(--lime); stroke-width: 7; opacity: 0.12; }
 .lang-svg .lang-link.is-hot { stroke: var(--lime); stroke-width: 2.6; }
-.lang-svg .lang-ray { stroke: rgba(201, 241, 68, 0.5); stroke-width: 1.1; }
-.lang-svg .lang-ray-flow { stroke: rgba(230, 255, 160, 0.9); stroke-width: 1.4; stroke-dasharray: 2 26; opacity: 0; }
-.lang-svg .lang-tether { stroke: rgba(201, 241, 68, 0.85); stroke-width: 1.3; }
+.lang-svg .lang-ray { stroke: color-mix(in srgb, var(--lime) 50%, transparent); stroke-width: 1.1; }
+.lang-svg .lang-ray-flow { stroke: color-mix(in srgb, var(--lang-flow) 90%, transparent); stroke-width: 1.4; stroke-dasharray: 2 26; opacity: 0; }
+.lang-svg .lang-tether { stroke: color-mix(in srgb, var(--lime) 85%, transparent); stroke-width: 1.3; }
 .lang-flowing .lang-svg .lang-ray-flow { animation: lang-flow 1.6s linear infinite; }
 @keyframes lang-flow { to { stroke-dashoffset: -28; } }
 
@@ -309,7 +319,7 @@ html:not(.js) .lang-check,
   height: 44px;
   margin: -22px 0 0 -22px;
   border-radius: 50%;
-  border: 1px solid rgba(201, 241, 68, 0.35);
+  border: 1px solid color-mix(in srgb, var(--lime) 35%, transparent);
   opacity: 0;
 }
 .js .lang-label { opacity: 0; }
